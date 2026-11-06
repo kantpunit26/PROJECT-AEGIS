@@ -1,0 +1,37 @@
+FROM continuumio/miniconda3:24.1.2-0
+
+LABEL maintainer="PROJECT AEGIS 2.0 Scientific Team <aegis-research@surveillance.org>"
+LABEL description="AEGIS 2.0 High-Performance Bioinformatics Computing Container"
+
+# System dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    procps \
+    curl \
+    git \
+    build-essential \
+    default-jre \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Nextflow
+RUN curl -s https://get.nextflow.io | bash && mv nextflow /usr/local/bin/
+
+# Create Conda Environment with core bioinformatics tools
+RUN conda config --add channels defaults && \
+    conda config --add channels bioconda && \
+    conda config --add channels conda-forge && \
+    conda install -y \
+        ncbi-amrfinderplus=3.12.8 \
+        snippy=4.6.0 \
+        iqtree=2.2.6 \
+        snp-dists=0.8.2 \
+        quast=5.2.0 \
+        celery=5.3.6 \
+        redis-py=5.0.3 \
+        sqlalchemy=2.0.28 \
+        psycopg2=2.9.9 \
+    && conda clean -a
+
+WORKDIR /app
+COPY ../../backend /app
+
+CMD ["celery", "-A", "app.core.celery_app.celery", "worker", "-Q", "bioinfo", "--loglevel=info"]

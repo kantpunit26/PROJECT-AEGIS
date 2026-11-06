@@ -1,0 +1,30 @@
+version: '3.8'
+
+# AEGIS 2.0 - Dedicated Bioinformatics HPC Extension
+# Usage: docker compose -f docker-compose.yml -f deploy/docker-compose.bioinfo.yml up --build -d
+
+services:
+  bioinformatics_worker:
+    build:
+      context: ./bioinformatics/docker
+      dockerfile: Dockerfile.bioinfo
+    container_name: aegis_bioinfo_worker
+    restart: unless-stopped
+    command: celery -A app.core.celery_app.celery worker -Q bioinfo --loglevel=info --concurrency=2
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://${POSTGRES_USER:-aegis}:${POSTGRES_PASSWORD:-aegis_secure_password_2026}@db:5432/${POSTGRES_DB:-aegis_db}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DATA_ROOT=/app/data
+      - NEXTFLOW_EXECUTABLE=/opt/conda/bin/nextflow
+      - AMRFINDER_DB_PATH=/opt/amrfinder_db
+    volumes:
+      - ./backend:/app
+      - ./data:/app/data
+      - ./bioinformatics:/bioinformatics
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - db
+      - redis
+    networks:
+      - aegis_network
