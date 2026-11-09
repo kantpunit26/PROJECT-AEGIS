@@ -98,3 +98,4 @@ class ComparativeGenomicsService:
         return coordinates
 
 comparative_service = ComparativeGenomicsService()
+

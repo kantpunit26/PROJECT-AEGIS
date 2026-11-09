@@ -46,3 +46,4 @@ class EpidemiologicalScenario(Base):
     
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+

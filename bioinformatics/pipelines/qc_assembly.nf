@@ -37,3 +37,4 @@ workflow {
 
     QUAST_QC(ch_assemblies)
 }
+

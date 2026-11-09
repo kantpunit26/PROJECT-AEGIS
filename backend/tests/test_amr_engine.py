@@ -16,3 +16,4 @@ def test_amr_co_occurrence(client):
     # Diagonal should be >= any off-diagonal
     for i in range(len(data["genes"])):
         assert data["matrix"][i][i] >= 0
+

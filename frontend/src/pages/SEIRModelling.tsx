@@ -353,3 +353,4 @@ export const SEIRModelling: React.FC = () => {
     </div>
   );
 };
+

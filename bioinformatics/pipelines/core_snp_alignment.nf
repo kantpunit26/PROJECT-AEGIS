@@ -78,3 +78,4 @@ workflow {
     core_out   = SNIPPY_CORE(snippy_out.map{ it[1] }.collect(), ch_ref)
     IQTREE_PHYLOGENY(core_out.clean_aln)
 }
+

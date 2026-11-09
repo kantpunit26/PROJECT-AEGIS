@@ -1,0 +1,5 @@
+Accession,Sample_ID,Organism,Strain,Collection_Date,Collection_Year,Isolation_Source,Country,State_Province,City,Latitude,Longitude,Sequence_Type,K_Locus,O_Locus,Carbapenemases,QC_Status
+GCA_013374875.1,SAMN14589201,Klebsiella pneumoniae,VAD-KP-2023-01,2023-02-14,2023,Blood,India,Gujarat,Vadodara,22.3072,73.1812,ST147,KL64,O1v2,blaNDM-5;blaOXA-181,PASS
+GCA_013374895.1,SAMN14589222,Klebsiella pneumoniae,VAD-KP-2023-04,2023-02-28,2023,Blood,India,Gujarat,Vadodara,22.3115,73.1920,ST147,KL64,O1v2,blaNDM-5;blaOXA-181,PASS
+GCA_000300435.1,SAMN01823901,Klebsiella pneumoniae,HS11286,2021-08-20,2021,Sputum,China,Shanghai,Shanghai,31.2304,121.4737,ST11,KL64,O2v1,blaKPC-2,PASS
+GCA_020531555.1,SAMN22091480,Klebsiella pneumoniae,ITA-ROMA-ST258,2022-10-05,2022,Urine,Italy,Lazio,Rome,41.9028,12.4964,ST258,KL107,O2v2,blaKPC-3,PASS

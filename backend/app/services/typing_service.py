@@ -57,3 +57,4 @@ class MolecularTypingService:
         }
 
 typing_service = MolecularTypingService()
+

@@ -133,3 +133,4 @@ Dynamic surveillance projections and outbreak alerts.
 |---|---|---|
 | `modelling_scenarios`| `id`, `model_type`, `parameters_json`, `trajectory_json`, `r0`, `peak_infected` | SEIR numerical integration outputs |
 | `surveillance_alerts`| `id`, `alert_type`, `severity`, `title`, `message`, `cluster_isolates`, `acknowledged` | Outbreak warnings and Slack/Discord notifications |
+

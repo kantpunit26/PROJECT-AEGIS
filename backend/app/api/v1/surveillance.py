@@ -36,3 +36,4 @@ def execute_natural_language_query(req: NaturalLanguageQueryRequest, db: Session
 def get_alerts(db: Session = Depends(get_db)):
     alerts = db.query(SurveillanceAlert).order_by(SurveillanceAlert.created_at.desc()).all()
     return alerts
+

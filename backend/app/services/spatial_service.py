@@ -171,3 +171,4 @@ class GeospatialSurveillanceService:
         }
 
 spatial_service = GeospatialSurveillanceService()
+

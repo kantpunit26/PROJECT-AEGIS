@@ -131,3 +131,4 @@ npm run dev
 
 ---
 *AEGIS 2.0 is developed under scientific reproducibility and open computational epidemiology standards.*
+

@@ -1,11 +1,15 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+import time
+import datetime
+from fastapi import APIRouter, Depends, HTTPException, Query, status, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.isolate import Isolate
 from app.models.amr import AMRDeterminant
+from app.models.typing import MolecularType
 from app.schemas.isolate import IsolateOut, IsolateDetailOut, IsolateCreate
 from app.services.ncbi_service import ncbi_service
+from app.services.fasta_service import fasta_service
 
 router = APIRouter()
 
@@ -182,3 +186,96 @@ def ingest_from_ncbi(accession: str, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(iso)
     return {"status": "ingested", "isolate_id": iso.id, "accession": accession, "qc_status": iso.qc_status}
+
+@router.post("/upload-fasta", summary="Upload & Analyze Raw FASTA Assembly")
+async def upload_fasta(
+    file: UploadFile = File(...),
+    organism: str = Form("Klebsiella pneumoniae"),
+    strain: Optional[str] = Form(None),
+    country: Optional[str] = Form("Unknown"),
+    city: Optional[str] = Form(None),
+    isolation_source: Optional[str] = Form("Clinical"),
+    db: Session = Depends(get_db)
+):
+    """
+    Accepts raw FASTA/FNA genome assemblies, calculates SHA256 checksums,
+    N50, GC content, contig count, evaluates taxonomic QC, screens AMR cassettes,
+    and registers the isolate.
+    """
+    try:
+        contents = await file.read()
+        analysis = fasta_service.analyze_fasta_content(contents, file.filename, organism)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to parse FASTA file: {str(e)}")
+
+    clean_filename = file.filename.rsplit(".", 1)[0].replace(" ", "_")
+    accession = f"LOCAL_{clean_filename}_{int(time.time())}"
+
+    iso = Isolate(
+        accession=accession,
+        sample_id=f"SAMPLE_{clean_filename}",
+        organism=organism,
+        strain=strain or clean_filename,
+        country=country,
+        city=city,
+        isolation_source=isolation_source,
+        collection_date=datetime.date.today(),
+        collection_year=datetime.date.today().year,
+        assembly_level="Contig" if analysis["contig_count"] > 1 else "Complete Genome",
+        genome_size=analysis["genome_size"],
+        gc_percent=analysis["gc_percent"],
+        n50=analysis["n50"],
+        contig_count=analysis["contig_count"],
+        qc_status=analysis["qc_status"],
+        qc_notes=analysis["qc_notes"],
+        checksum_sha256=analysis["checksum_sha256"],
+        provenance_source=analysis["provenance_source"]
+    )
+    db.add(iso)
+    db.flush()
+
+    # Add detected AMR determinants
+    created_amr = []
+    for amr_det in analysis["detected_amr"]:
+        det = AMRDeterminant(
+            isolate_id=iso.id,
+            gene_symbol=amr_det["gene_symbol"],
+            gene_family=amr_det["gene_family"],
+            drug_class=amr_det["drug_class"],
+            subclass=amr_det["subclass"],
+            element_type="GENE",
+            confidence=amr_det["confidence"],
+            predicted_context=amr_det["predicted_context"],
+            contig_id=amr_det["contig_id"]
+        )
+        db.add(det)
+        created_amr.append(amr_det["gene_symbol"])
+
+    # Basic molecular type tag
+    mol = MolecularType(
+        isolate_id=iso.id,
+        scheme="PASTEUR",
+        sequence_type="ST-Local",
+        kleborate_virulence_score=1,
+        kleborate_resistance_score=len(created_amr)
+    )
+    db.add(mol)
+    db.commit()
+    db.refresh(iso)
+
+    return {
+        "status": "success",
+        "isolate_id": iso.id,
+        "accession": iso.accession,
+        "organism": iso.organism,
+        "strain": iso.strain,
+        "genome_size": iso.genome_size,
+        "gc_percent": iso.gc_percent,
+        "n50": iso.n50,
+        "contig_count": iso.contig_count,
+        "qc_status": iso.qc_status,
+        "qc_notes": iso.qc_notes,
+        "detected_amr": created_amr
+    }
+
+

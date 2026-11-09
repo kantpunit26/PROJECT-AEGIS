@@ -31,3 +31,4 @@ def get_ast_records(db: Session = Depends(get_db), antibiotic: Optional[str] = N
         }
         for r in records
     ]
+

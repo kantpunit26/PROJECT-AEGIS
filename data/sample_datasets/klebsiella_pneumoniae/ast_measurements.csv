@@ -1,0 +1,7 @@
+Accession,Antibiotic,MIC_Value,MIC_Unit,Phenotype,Standard,Testing_Method
+GCA_013374875.1,Meropenem,64.0,mg/L,R,CLSI,Broth microdilution
+GCA_013374875.1,Colistin,1.0,mg/L,S,EUCAST,Broth microdilution
+GCA_013374875.1,Amikacin,256.0,mg/L,R,CLSI,Broth microdilution
+GCA_013374895.1,Meropenem,64.0,mg/L,R,CLSI,Broth microdilution
+GCA_013374895.1,Colistin,1.0,mg/L,S,EUCAST,Broth microdilution
+GCA_013374895.1,Amikacin,256.0,mg/L,R,CLSI,Broth microdilution

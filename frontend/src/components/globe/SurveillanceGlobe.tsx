@@ -248,3 +248,4 @@ export const SurveillanceGlobe: React.FC<SurveillanceGlobeProps> = ({ isolates, 
     </div>
   );
 };
+

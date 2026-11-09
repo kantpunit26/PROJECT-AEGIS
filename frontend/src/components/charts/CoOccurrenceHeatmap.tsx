@@ -70,3 +70,4 @@ export const CoOccurrenceHeatmap: React.FC<CoOccurrenceProps> = ({ data }) => {
     </div>
   );
 };
+

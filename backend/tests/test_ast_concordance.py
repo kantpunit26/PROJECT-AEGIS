@@ -9,3 +9,4 @@ def test_ast_concordance_metrics(client):
     assert mero["sensitivity"] >= 90.0
     assert mero["concordance_rate"] >= 85.0
     assert "confusion_matrix" in mero
+

@@ -37,3 +37,4 @@ def create_job(job_in: AnalysisJobCreate, db: Session = Depends(get_db)):
 @router.get("/{id}/logs", response_model=List[WorkflowExecutionLogOut], summary="Fetch Job Execution Logs")
 def get_job_logs(id: str, db: Session = Depends(get_db)):
     return db.query(WorkflowExecutionLog).filter(WorkflowExecutionLog.job_id == id).order_by(WorkflowExecutionLog.timestamp.asc()).all()
+

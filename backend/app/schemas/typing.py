@@ -34,3 +34,4 @@ class MLSTDistributionItem(BaseModel):
     count: int
     percentage: float
     predominant_carbapenemase: Optional[str] = None
+

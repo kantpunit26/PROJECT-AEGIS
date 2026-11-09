@@ -41,3 +41,4 @@ workflow {
     ch_accessions = Channel.fromPath(params.accessions).splitText().map { it.trim() }
     NCBI_DOWNLOAD(ch_accessions)
 }
+

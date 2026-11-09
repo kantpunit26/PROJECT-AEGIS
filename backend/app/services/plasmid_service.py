@@ -60,3 +60,4 @@ class PlasmidService:
         }
 
 plasmid_service = PlasmidService()
+

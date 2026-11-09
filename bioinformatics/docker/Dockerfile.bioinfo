@@ -35,3 +35,4 @@ WORKDIR /app
 COPY ../../backend /app
 
 CMD ["celery", "-A", "app.core.celery_app.celery", "worker", "-Q", "bioinfo", "--loglevel=info"]
+

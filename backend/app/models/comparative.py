@@ -44,3 +44,4 @@ class PhylogeneticTree(Base):
     
     tool_version = Column(String(32), nullable=True, default="IQ-TREE v2.2.6")
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+

@@ -50,3 +50,4 @@ PROJECT AEGIS 2.0 is structured as a decoupled, microservices-ready modular mono
 
 ### 2.3 Modular Ingestion Architecture
 - Ingestion supports direct NCBI Entrez / Datasets REST endpoints, BioSample metadata parsing, and fallback ingestion from pre-curated reference packages for offline/air-gapped deployments.
+

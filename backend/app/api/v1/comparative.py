@@ -24,3 +24,4 @@ def get_phylogenetic_tree(organism: str = "Klebsiella pneumoniae", db: Session =
 @router.get("/circular-genome", summary="Circular Genome GC Profile Coordinates")
 def get_circular_genome(genome_size: int = 5333942, bins: int = 100):
     return comparative_service.get_circular_genome_coordinates(genome_size=genome_size, bins=bins)
+

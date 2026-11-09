@@ -13,3 +13,4 @@ def get_mlst_distribution(organism: Optional[str] = None, db: Session = Depends(
 @router.get("/kleborate-summary", summary="Kleborate Virulence vs Resistance Matrix")
 def get_kleborate_summary(db: Session = Depends(get_db)):
     return typing_service.get_kleborate_summary(db)
+

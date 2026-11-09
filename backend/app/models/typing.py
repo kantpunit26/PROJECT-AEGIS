@@ -33,3 +33,4 @@ class MolecularType(Base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     isolate = relationship("Isolate", back_populates="molecular_types")
+

@@ -49,3 +49,4 @@ class Isolate(Base):
     molecular_types = relationship("MolecularType", back_populates="isolate", cascade="all, delete-orphan")
     ast_records = relationship("ASTRecord", back_populates="isolate", cascade="all, delete-orphan")
     plasmids = relationship("Plasmid", back_populates="isolate", cascade="all, delete-orphan")
+

@@ -11,7 +11,12 @@ export const ComparativeGenomics: React.FC = () => {
   const [treeData, setTreeData] = useState<PhylogeneticTreeData | null>(null);
   const [circularData, setCircularData] = useState<any[]>([]);
   const [threshold, setThreshold] = useState<number>(15);
-  const [activeSubTab, setActiveSubTab] = useState<'snp' | 'tree' | 'circular'>('snp');
+  const getInitialSubTab = (): 'snp' | 'tree' | 'circular' => {
+    const sub = new URLSearchParams(window.location.search).get('sub');
+    if (sub === 'tree' || sub === 'circular') return sub;
+    return 'snp';
+  };
+  const [activeSubTab, setActiveSubTab] = useState<'snp' | 'tree' | 'circular'>(getInitialSubTab());
 
   useEffect(() => {
     async function loadComparative() {
@@ -106,3 +111,4 @@ export const ComparativeGenomics: React.FC = () => {
     </div>
   );
 };
+

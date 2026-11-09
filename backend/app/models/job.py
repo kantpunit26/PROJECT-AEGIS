@@ -27,3 +27,4 @@ class WorkflowExecutionLog(Base):
     log_level = Column(String(16), nullable=False, default="INFO")
     message = Column(Text, nullable=False)
     timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
+

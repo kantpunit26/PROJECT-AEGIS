@@ -29,3 +29,4 @@ def health_check(db: Session = Depends(get_db)):
         "uptime_seconds": uptime_seconds,
         "primary_organism": "Klebsiella pneumoniae"
     }
+

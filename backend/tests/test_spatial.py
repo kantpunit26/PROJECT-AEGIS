@@ -22,3 +22,4 @@ def test_natural_language_spatial_query(client):
     for m in matched:
         assert m["distance_km"] <= 50.0
         assert any("NDM" in gene for gene in m["carbapenemases"])
+

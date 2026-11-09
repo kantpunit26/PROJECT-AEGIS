@@ -13,3 +13,4 @@ def test_root_endpoint(client):
     data = response.json()
     assert data["status"] == "active"
     assert data["api_v1"] == "/api/v1"
+

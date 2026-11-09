@@ -30,3 +30,4 @@ def list_plasmids(db: Session = Depends(get_db)):
         }
         for p in plasmids
     ]
+

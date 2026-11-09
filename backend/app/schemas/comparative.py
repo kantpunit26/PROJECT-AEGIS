@@ -38,3 +38,4 @@ class CircularGenomeCoordinate(BaseModel):
     gc_content: float
     gc_skew: float
     features: List[Dict[str, Any]]
+

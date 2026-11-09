@@ -148,3 +148,4 @@ export const CircularGenomeViewer: React.FC<CircularGenomeViewerProps> = ({
     </div>
   );
 };
+

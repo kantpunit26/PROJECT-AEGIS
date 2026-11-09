@@ -39,3 +39,4 @@ workflow {
 
     AMRFINDER_PLUS(ch_assemblies)
 }
+

@@ -39,3 +39,11 @@ pgdata/
 .DS_Store
 Thumbs.db
 *.log
+
+# Video production scratch folders
+ultimate_production/
+video_production/
+cinematic_production/
+test_captures/
+test_whoosh.wav
+

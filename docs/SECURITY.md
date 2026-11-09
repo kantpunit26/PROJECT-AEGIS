@@ -19,3 +19,4 @@ PROJECT AEGIS 2.0 handles sensitive microbiological, clinical, and spatial epide
 ### 1.3 Data Provenance & Cryptographic Integrity
 - Raw input sequences (FASTQ/FASTA) undergo SHA256 checksum generation upon ingestion.
 - Software tool versions (e.g., AMRFinderPlus v3.12.8, IQ-TREE v2.2.6) and database releases (NCBI AMR db v2024-05-02.1) are permanently recorded per analysis run.
+

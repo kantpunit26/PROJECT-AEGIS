@@ -19,3 +19,4 @@ else
 fi
 
 echo "[AEGIS 2.0] Database backup completed: ${BACKUP_FILE} ($(du -h "$BACKUP_FILE" | cut -f1))"
+

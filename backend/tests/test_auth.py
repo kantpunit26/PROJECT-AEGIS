@@ -15,3 +15,4 @@ def test_auth_login_failure(client):
         "password": "incorrect_password"
     })
     assert response.status_code == 401
+

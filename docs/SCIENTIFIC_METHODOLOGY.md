@@ -94,3 +94,4 @@ Where:
 - $\alpha$: Rate of progression from colonization to active infection
 - $\delta_{treat}$: Antibiotic exposure / treatment response
 - $R_0$: Basic reproduction number calculated via next-generation matrix method.
+

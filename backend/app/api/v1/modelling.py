@@ -27,3 +27,4 @@ def simulate_seir(params: SEIRParameters, save_scenario: bool = False, db: Sessi
         db.commit()
 
     return result
+

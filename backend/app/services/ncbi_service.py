@@ -86,3 +86,4 @@ class NCBIDataAcquisitionService:
         }
 
 ncbi_service = NCBIDataAcquisitionService()
+

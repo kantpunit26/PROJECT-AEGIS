@@ -13,8 +13,25 @@ import { Reports } from './pages/Reports';
 import { api } from './services/api';
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
+  const getTabFromUrl = (): NavTab => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab') as NavTab;
+    const validTabs: NavTab[] = [
+      'dashboard', 'surveillance', 'isolates', 'amr', 'typing',
+      'comparative', 'ast', 'plasmids', 'modelling', 'reports'
+    ];
+    return validTabs.includes(tab) ? tab : 'dashboard';
+  };
+
+  const [activeTab, setActiveTab] = useState<NavTab>(getTabFromUrl());
   const [systemHealth, setSystemHealth] = useState<any>(null);
+
+  const handleTabChange = (tab: NavTab) => {
+    setActiveTab(tab);
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', tab);
+    window.history.pushState({}, '', url.toString());
+  };
 
   useEffect(() => {
     async function checkHealth() {
@@ -31,7 +48,7 @@ export const App: React.FC = () => {
   const renderActivePage = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard onNavigate={(tab) => setActiveTab(tab)} />;
+        return <Dashboard onNavigate={(tab) => handleTabChange(tab)} />;
       case 'surveillance':
         return <Surveillance />;
       case 'isolates':
@@ -49,7 +66,7 @@ export const App: React.FC = () => {
       case 'reports':
         return <Reports />;
       default:
-        return <Dashboard onNavigate={(tab) => setActiveTab(tab)} />;
+        return <Dashboard onNavigate={(tab) => handleTabChange(tab)} />;
     }
   };
 
@@ -57,7 +74,7 @@ export const App: React.FC = () => {
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
       <Header systemHealth={systemHealth} />
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar activeTab={activeTab} onTabChange={setActiveTab} alertCount={1} />
+        <Sidebar activeTab={activeTab} onTabChange={handleTabChange} alertCount={1} />
         <main className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
           <div className="max-w-7xl mx-auto">{renderActivePage()}</div>
         </main>
@@ -67,3 +84,4 @@ export const App: React.FC = () => {
 };
 
 export default App;
+

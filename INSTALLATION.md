@@ -134,3 +134,4 @@ If developing without Docker containers:
   ```bash
   ./deploy/scripts/restore_db.sh ./data/backups/aegis_db_backup_20261106_120000.dump
   ```
+

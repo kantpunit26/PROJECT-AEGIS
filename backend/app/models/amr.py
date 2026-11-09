@@ -38,3 +38,4 @@ class AMRDeterminant(Base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     isolate = relationship("Isolate", back_populates="amr_determinants")
+

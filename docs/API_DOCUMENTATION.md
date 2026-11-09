@@ -84,3 +84,4 @@ ReDoc UI: `http://localhost:8000/redoc`
 
 - `GET /api/v1/alerts`: Active surveillance alerts and threshold breaches.
 - `POST /api/v1/reports/export`: Export surveillance datasets in CSV, GeoJSON, Newick, JSON, or WHO GLASS format.
+

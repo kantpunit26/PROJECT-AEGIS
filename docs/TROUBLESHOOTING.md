@@ -28,3 +28,4 @@ docker compose exec redis redis-cli ping
 
 ### 1.4 NCBI Ingestion Network Timeouts
 When downloading large SRA or assembly files, ensure `NCBI_API_KEY` is specified in `.env` to prevent rate-limiting (NCBI allows 10 requests/sec with key vs. 3 requests/sec without).
+

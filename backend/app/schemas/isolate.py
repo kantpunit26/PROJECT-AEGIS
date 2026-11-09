@@ -55,3 +55,4 @@ class IsolateDetailOut(IsolateOut):
 
     class Config:
         from_attributes = True
+

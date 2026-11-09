@@ -50,3 +50,4 @@ export const Header: React.FC<HeaderProps> = ({ systemHealth }) => {
     </header>
   );
 };
+

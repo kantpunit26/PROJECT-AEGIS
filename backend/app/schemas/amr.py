@@ -41,3 +41,4 @@ class AMRPrevalenceItem(BaseModel):
 class AMRPrevalenceResponse(BaseModel):
     total_isolates: int
     determinants: List[AMRPrevalenceItem]
+

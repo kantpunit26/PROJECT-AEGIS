@@ -23,3 +23,27 @@ def test_get_isolate_detail(client):
     # Check blaKPC-2
     genes = [d["gene_symbol"] for d in data["amr_determinants"]]
     assert "blaKPC-2" in genes
+
+def test_upload_fasta_assembly(client):
+    fasta_content = (
+        ">contig_1 Klebsiella pneumoniae chromosome\n"
+        "ATGACTATCAAAGTAGGTATCAACGGCTTCGGCCGCATCGGCCGTCTCGCACTGCGCCGCATTCAGGTCGTCGACGTCGTAGCA\n"
+        ">scaffold_8_plasmid_pNDM5 carrying blaNDM\n"
+        "ATGGAATTGCCCAATATTATGCACCCGGTCGCGAAGCTGAGCACCGCATTAGCCGCTGCATTGATGCTGAGCGGGTGCATGCCCGGT\n"
+    )
+    files = {"file": ("test_clinical_isolate.fna", fasta_content.encode("utf-8"), "text/plain")}
+    data = {
+        "organism": "Klebsiella pneumoniae",
+        "strain": "TEST-ISOLATE-01",
+        "country": "India",
+        "city": "Vadodara"
+    }
+    response = client.post("/api/v1/isolates/upload-fasta", files=files, data=data)
+    assert response.status_code == 200
+    res = response.json()
+    assert res["status"] == "success"
+    assert "LOCAL_test_clinical_isolate" in res["accession"]
+    assert res["contig_count"] == 2
+    assert "blaNDM.1" in res["detected_amr"]
+
+

@@ -26,3 +26,4 @@ def test_phylogenetic_tree_newick(client):
     assert tree["substitution_model"] == "GTR+F+R4"
     assert "GCA_013374875.1" in tree["newick_string"]
     assert "metadata_tracks" in tree
+

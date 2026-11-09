@@ -49,3 +49,4 @@ class SurveillanceAlertService:
             return False
 
 alert_service = SurveillanceAlertService()
+

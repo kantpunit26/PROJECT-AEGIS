@@ -17,3 +17,4 @@ __all__ = [
     "SEIRParameters", "SEIRSimulationResult",
     "AnalysisJobCreate", "AnalysisJobOut", "WorkflowExecutionLogOut"
 ]
+

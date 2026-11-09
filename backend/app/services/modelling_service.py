@@ -136,3 +136,4 @@ class EpidemiologicalModellingService:
         )
 
 modelling_service = EpidemiologicalModellingService()
+

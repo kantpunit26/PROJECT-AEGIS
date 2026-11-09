@@ -126,3 +126,4 @@ export const SNPHeatmap: React.FC<SNPHeatmapProps> = ({ data, outbreakThreshold 
     </div>
   );
 };
+

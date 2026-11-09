@@ -52,3 +52,4 @@ workflow {
     MLST_TYPING(ch_assemblies)
     KLEBORATE_PROFILING(ch_assemblies)
 }
+

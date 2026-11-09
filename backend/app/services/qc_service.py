@@ -25,6 +25,30 @@ QC_SPECIFICATIONS = {
         "max_gc_percent": 40.5,
         "min_n50": 20_000,
         "max_contig_count": 400,
+    },
+    "Salmonella enterica": {
+        "min_genome_size": 4_500_000,
+        "max_genome_size": 5_200_000,
+        "min_gc_percent": 51.0,
+        "max_gc_percent": 53.5,
+        "min_n50": 25_000,
+        "max_contig_count": 400,
+    },
+    "Staphylococcus aureus": {
+        "min_genome_size": 2_700_000,
+        "max_genome_size": 3_100_000,
+        "min_gc_percent": 32.0,
+        "max_gc_percent": 34.0,
+        "min_n50": 20_000,
+        "max_contig_count": 300,
+    },
+    "Enterococcus faecium": {
+        "min_genome_size": 2_600_000,
+        "max_genome_size": 3_200_000,
+        "min_gc_percent": 37.0,
+        "max_gc_percent": 39.5,
+        "min_n50": 20_000,
+        "max_contig_count": 300,
     }
 }
 
@@ -65,3 +89,4 @@ def evaluate_assembly_qc(
         return "PASS", "Assembly satisfies all rigorous completeness and taxonomic conformity checks."
     
     return "WARNING", "; ".join(flags)
+

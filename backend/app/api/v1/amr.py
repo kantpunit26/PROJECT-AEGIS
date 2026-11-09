@@ -45,3 +45,4 @@ def get_determinants(
         }
         for d in dets
     ]
+

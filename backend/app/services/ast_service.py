@@ -64,3 +64,4 @@ class ASTValidationService:
         return metrics_list
 
 ast_service = ASTValidationService()
+

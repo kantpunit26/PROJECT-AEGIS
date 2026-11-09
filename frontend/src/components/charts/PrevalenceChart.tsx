@@ -62,3 +62,4 @@ export const PrevalenceChart: React.FC<PrevalenceChartProps> = ({ determinants, 
     </div>
   );
 };
+

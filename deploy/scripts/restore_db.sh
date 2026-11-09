@@ -25,3 +25,4 @@ else
 fi
 
 echo "[AEGIS 2.0] Database restored successfully."
+

@@ -37,3 +37,4 @@ def login(creds: LoginRequest):
 @router.get("/me", summary="Current User Profile")
 def get_me(user: dict = Depends(get_current_user)):
     return user
+

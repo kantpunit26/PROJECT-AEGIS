@@ -32,3 +32,4 @@ class SEIRSimulationResult(BaseModel):
     peak_infected_count: float
     peak_day: int
     total_colonization_incidence: float
+

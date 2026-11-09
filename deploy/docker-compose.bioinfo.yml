@@ -28,3 +28,4 @@ services:
       - redis
     networks:
       - aegis_network
+

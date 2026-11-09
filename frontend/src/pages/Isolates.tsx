@@ -266,3 +266,4 @@ export const Isolates: React.FC = () => {
     </div>
   );
 };
+

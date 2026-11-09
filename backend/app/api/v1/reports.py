@@ -31,3 +31,4 @@ def export_newick(tree_id: Optional[str] = None, db: Session = Depends(get_db)):
         media_type="text/plain",
         headers={"Content-Disposition": "attachment; filename=aegis_phylogeny.nwk"}
     )
+

@@ -16,3 +16,4 @@ def test_seir_simulation(client):
     assert len(res["days"]) > 50
     assert len(res["infected"]) == len(res["days"])
     assert res["peak_infected_count"] >= 2.0
+
