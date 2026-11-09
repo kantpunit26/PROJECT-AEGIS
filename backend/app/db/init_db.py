@@ -18,7 +18,7 @@ def init_db():
         if db.query(Isolate).first() is not None:
             return
 
-        print("[AEGIS 2.0] Seeding baseline genomic surveillance dataset for Klebsiella pneumoniae...")
+        print("[AEGIS] Seeding baseline genomic surveillance dataset for Klebsiella pneumoniae...")
 
         seed_isolates = [
             {
@@ -508,10 +508,10 @@ def init_db():
         db.add(alert)
 
         db.commit()
-        print("[AEGIS 2.0] Database initialized with verified genomic benchmarks.")
+        print("[AEGIS] Database initialized with verified genomic benchmarks.")
     except Exception as e:
         db.rollback()
-        print(f"[AEGIS 2.0] Database initialization failed: {e}")
+        print(f"[AEGIS] Database initialization failed: {e}")
         raise e
     finally:
         db.close()

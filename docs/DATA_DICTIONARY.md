@@ -1,6 +1,6 @@
-# PROJECT AEGIS 2.0 — DATA DICTIONARY
+# PROJECT AEGIS — DATA DICTIONARY
 
-This document defines the core relational database schema, entities, fields, data types, and constraints in the AEGIS 2.0 platform.
+This document defines the core relational database schema, entities, fields, data types, and constraints in the AEGIS platform.
 
 ---
 

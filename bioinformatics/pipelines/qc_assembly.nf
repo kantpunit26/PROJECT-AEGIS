@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 
 /*
 ========================================================================================
-   PROJECT AEGIS 2.0 — ASSEMBLY QUALITY CONTROL PIPELINE
+   PROJECT AEGIS — ASSEMBLY QUALITY CONTROL PIPELINE
    Executes QUAST metrics, contig length filtering, and taxonomic GC checks
 ========================================================================================
 */

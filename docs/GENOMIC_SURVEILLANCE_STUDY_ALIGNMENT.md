@@ -1,4 +1,4 @@
-# PROJECT AEGIS 2.0 — RESEARCH STUDY ALIGNMENT & COMPLIANCE MATRIX
+# PROJECT AEGIS — RESEARCH STUDY ALIGNMENT & COMPLIANCE MATRIX
 ## *Genome-Based Surveillance, Characterisation and Phylogenetic Analysis of Antimicrobial Resistance in Klebsiella pneumoniae Using Publicly Available Genomic Data*
 
 ### Research Category
@@ -6,11 +6,11 @@
 
 ---
 
-## 1. Executive Summary: Does AEGIS 2.0 Have Everything Mentioned?
+## 1. Executive Summary: Does AEGIS Have Everything Mentioned?
 
 **YES, 100% OF THE RESEARCH SPECIFICATION IS IMPLEMENTED, VALIDATED, AND DOCUMENTED.**
 
-Project **AEGIS 2.0** was built from first principles as an enterprise, research-grade computational genomics and genomic surveillance platform. It directly fulfills:
+Project **AEGIS** was built from first principles as an enterprise, research-grade computational genomics and genomic surveillance platform. It directly fulfills:
 - The **Vision** and **Main Research Question** regarding *Klebsiella pneumoniae* AMR patterns across bacterial lineages.
 - All **8 Research Objectives** (data acquisition, QC, AMR screening, MLST, comparative genomics, core SNPs, AST concordance, and reproducible workflows).
 - All **4 Research Hypotheses** with quantitative, testable statistical frameworks.
@@ -25,7 +25,7 @@ Project **AEGIS 2.0** was built from first principles as an enterprise, research
 
 ### 2.1 Research Objectives Compliance
 
-| # | Research Objective | AEGIS 2.0 Implementation | File / Code Path | Verification Status |
+| # | Research Objective | AEGIS Implementation | File / Code Path | Verification Status |
 |---|---------------------|--------------------------|------------------|:-------------------:|
 | **1** | Collect well-documented public *K. pneumoniae* genome sequences. | Automated NCBI Datasets, Pathogen Detection, and SRA ingestion. Master pilot catalog of 200 public isolates across global clones (ST11, ST147, ST258, etc.). | `bioinformatics/pipelines/ncbi_acquisition.nf`<br>`backend/app/services/ncbi_service.py`<br>`data/sample_datasets/klebsiella_pneumoniae/pilot_dataset_catalog_300.csv` | **VERIFIED** |
 | **2** | Assess genome quality and remove unsuitable records via predefined criteria. | Strict QC rules: Assembly N50 $\ge 50$ kb, genome length $5.0 - 5.8$ Mb, GC content $57.0 - 57.5\%$, contigs $< 500$, CheckM2 completeness $> 95\%$, contamination $< 5\%$. Biopython assembly parser with taxonomic QC flagging. | `bioinformatics/pipelines/qc_assembly.nf`<br>`backend/app/services/qc_service.py`<br>`backend/app/services/fasta_service.py`<br>`docs/SCIENTIFIC_METHODOLOGY.md` | **VERIFIED** |
@@ -40,7 +40,7 @@ Project **AEGIS 2.0** was built from first principles as an enterprise, research
 
 ### 2.2 Research Hypotheses Testing Framework
 
-| Hypothesis | Scientific Basis | AEGIS 2.0 Testing Mechanism | Findings / Observable Output |
+| Hypothesis | Scientific Basis | AEGIS Testing Mechanism | Findings / Observable Output |
 |:---|:---|:---|:---|
 | **H1: Lineage Distribution** | High-risk epidemic clones carry distinct resistance determinant profiles compared to community strains. | Tested in `typing_service.py` and `ComparativeGenomics.tsx`. Correlates MLST sequence types with AMRFinderPlus profiles. | **Supported**: ST11 & ST258 strongly correlate with *bla*KPC; ST147 strongly correlates with *bla*NDM-5 and *bla*OXA-181; ST23 exhibits hypervirulent *iuc/iro* with minimal acquired beta-lactamases. |
 | **H2: Determinant Co-occurrence** | Specific resistance determinants co-occur more frequently than expected by chance due to plasmid colocalization. | Tested via Fisher's exact test and pairwise odds ratio calculation in `amr_service.py`. Visualized in `AMRCoOccurrenceHeatmap.tsx`. | **Supported**: *bla*CTX-M-15 significantly co-occurs with aminoglycoside acetyltransferase *aac(6')-Ib-cr* and fluoroquinolone mutation *gyrA* S83I ($OR > 12.0$). |
@@ -94,7 +94,7 @@ flowchart TD
 
 ### 2.4 Expected Deliverables Traceability
 
-| Deliverable | Requirement Description | AEGIS 2.0 Asset / Location |
+| Deliverable | Requirement Description | AEGIS Asset / Location |
 |:---|:---|:---|
 | **1. Accession & Metadata Catalogue** | Master catalog containing accessions, collection dates, geography, assembly level, length, N50, GC%, ST, and AST. | `data/sample_datasets/klebsiella_pneumoniae/pilot_dataset_catalog_300.csv`<br>`data/sample_datasets/klebsiella_pneumoniae/metadata_manifest.csv`<br>`GET /api/v1/reports/export?format=csv` |
 | **2. Quality-Control Report** | Documented quality assessment including completeness, contamination, and fragmentation against predefined thresholds. | `backend/app/services/qc_service.py`<br>`backend/app/services/fasta_service.py`<br>`docs/SCIENTIFIC_METHODOLOGY.md` (Section 2) |
@@ -119,7 +119,7 @@ The full pipeline has been verified with real, executable software tests and liv
 
 # 2. FastAPI Health & System Status Endpoint
 curl http://localhost:8000/api/v1/health
-# Output: {"status":"online","system":"PROJECT AEGIS 2.0","database":"healthy","primary_organism":"Klebsiella pneumoniae"}
+# Output: {"status":"online","system":"PROJECT AEGIS","database":"healthy","primary_organism":"Klebsiella pneumoniae"}
 
 # 3. Nextflow Pipeline Architecture Verification
 # 6 DSL2 modular workflows synchronized in bioinformatics/pipelines/
@@ -128,3 +128,4 @@ curl http://localhost:8000/api/v1/health
 # High-bitrate 1080p video with subtitles, transition SFX, and full-screen walkthrough:
 # aegis_promotional_video.mp4 (2m 36s, 1080p, 6.6 MB)
 ```
+

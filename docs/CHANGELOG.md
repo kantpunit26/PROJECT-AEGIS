@@ -1,4 +1,4 @@
-# PROJECT AEGIS 2.0 — CHANGELOG
+# PROJECT AEGIS — CHANGELOG
 
 ## [2.0.0] - Initial Release (Greenfield)
 

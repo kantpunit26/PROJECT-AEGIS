@@ -18,16 +18,16 @@ FFMPEG_EXE = imageio_ffmpeg.get_ffmpeg_exe()
 
 VOICE = "en-US-ChristopherNeural"
 
-# 13 High-Impact Scientific Narrative Scenes covering 100% of AEGIS 2.0
+# 13 High-Impact Scientific Narrative Scenes covering 100% of AEGIS
 SCENES = [
     {
         "id": "scene_01_intro",
         "type": "card",
         "badge": "MISSION INITIALIZATION",
-        "title": "PROJECT AEGIS 2.0",
+        "title": "PROJECT AEGIS",
         "subtitle": "Advanced Genomic Epidemiology & Intelligence System",
-        "voice_text": "Welcome to Project AEGIS 2.0, the Advanced Genomic Epidemiology and Intelligence System. An enterprise research platform engineered for real-time antimicrobial resistance surveillance and comparative genomics.",
-        "caption": "Project AEGIS 2.0 — Advanced Genomic Epidemiology & Intelligence System"
+        "voice_text": "Welcome to Project AEGIS, the Advanced Genomic Epidemiology and Intelligence System. An enterprise research platform engineered for real-time antimicrobial resistance surveillance and comparative genomics.",
+        "caption": "Project AEGIS — Advanced Genomic Epidemiology & Intelligence System"
     },
     {
         "id": "scene_02_loading",
@@ -132,9 +132,9 @@ SCENES = [
         "id": "scene_13_outro",
         "type": "card",
         "badge": "ENTERPRISE READY",
-        "title": "PROJECT AEGIS 2.0",
+        "title": "PROJECT AEGIS",
         "subtitle": "The Future of Genomic Epidemiology & AMR Intelligence",
-        "voice_text": "From raw genomic sequences to global surveillance intelligence. Project AEGIS 2.0: The Future of Genomic Epidemiology and AMR Intelligence.",
+        "voice_text": "From raw genomic sequences to global surveillance intelligence. Project AEGIS: The Future of Genomic Epidemiology and AMR Intelligence.",
         "caption": "FastAPI • React • PostGIS • Nextflow DSL2 • Docker Ready • WHO GLASS Compliant"
     }
 ]
@@ -349,7 +349,7 @@ def build_composed_frames():
             draw = ImageDraw.Draw(img)
 
             # Floating HUD Badge in Top Right (Leaves Navigation Header 100% visible)
-            hud_text = scene.get("hud", "AEGIS 2.0 SURVEILLANCE")
+            hud_text = scene.get("hud", "AEGIS SURVEILLANCE")
             hud_w = 420
             hud_h = 36
             hx1 = 1920 - hud_w - 24

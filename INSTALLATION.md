@@ -1,6 +1,6 @@
-# PROJECT AEGIS 2.0 — INSTALLATION & SETUP GUIDE
+# PROJECT AEGIS — INSTALLATION & SETUP GUIDE
 
-This guide details the step-by-step installation instructions for PROJECT AEGIS 2.0 across Windows (WSL2 / Docker Desktop), Linux (Ubuntu/Debian, RHEL), and macOS.
+This guide details the step-by-step installation instructions for PROJECT AEGIS across Windows (WSL2 / Docker Desktop), Linux (Ubuntu/Debian, RHEL), and macOS.
 
 ---
 
@@ -26,7 +26,7 @@ Docker Compose provides a single-command setup that launches the PostgreSQL/Post
 
 ### Step 1: Clone or Navigate to Project Directory
 ```bash
-cd AEGIS-2.0
+cd AEGIS
 ```
 
 ### Step 2: Configure Environment

@@ -1,6 +1,6 @@
 version: '3.8'
 
-# AEGIS 2.0 - Dedicated Bioinformatics HPC Extension
+# AEGIS - Dedicated Bioinformatics HPC Extension
 # Usage: docker compose -f docker-compose.yml -f deploy/docker-compose.bioinfo.yml up --build -d
 
 services:

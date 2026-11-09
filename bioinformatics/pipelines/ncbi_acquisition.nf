@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 
 /*
 ========================================================================================
-   PROJECT AEGIS 2.0 — NCBI DATA ACQUISITION & INGESTION PIPELINE
+   PROJECT AEGIS — NCBI DATA ACQUISITION & INGESTION PIPELINE
    Retrieves assemblies, computes SHA256 checksums, and extracts provenance metadata
 ========================================================================================
 */
@@ -23,7 +23,7 @@ process NCBI_DOWNLOAD {
 
     script:
     """
-    echo "[AEGIS 2.0] Fetching NCBI Dataset for accession ${accession}..."
+    echo "[AEGIS] Fetching NCBI Dataset for accession ${accession}..."
     
     # Download genome data package using NCBI Datasets CLI
     datasets download genome accession ${accession} --filename ${accession}.zip --include genome

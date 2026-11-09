@@ -21,9 +21,9 @@ class SurveillanceAlertService:
             "attachments": [
                 {
                     "color": color_map.get(severity, "#8B0000"),
-                    "title": f"🚨 [AEGIS 2.0 ALERT - {severity}] {title}",
+                    "title": f"🚨 [AEGIS ALERT - {severity}] {title}",
                     "text": message,
-                    "footer": "PROJECT AEGIS 2.0 Genomic Intelligence Engine",
+                    "footer": "PROJECT AEGIS Genomic Intelligence Engine",
                 }
             ]
         }
@@ -40,7 +40,7 @@ class SurveillanceAlertService:
             return False
 
         payload = {
-            "content": f"**[AEGIS 2.0 SURVEILLANCE NOTIFICATION]**\n**{title}**\n{message}"
+            "content": f"**[AEGIS SURVEILLANCE NOTIFICATION]**\n**{title}**\n{message}"
         }
         try:
             resp = requests.post(webhook_url, json=payload, timeout=5)

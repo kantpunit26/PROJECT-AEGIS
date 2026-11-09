@@ -1,4 +1,4 @@
-# PROJECT AEGIS 2.0 — RESEARCH PRESENTATION & POSTER TEMPLATES
+# PROJECT AEGIS — RESEARCH PRESENTATION & POSTER TEMPLATES
 ## *Genome-Based Surveillance, Characterisation and Phylogenetic Analysis of Antimicrobial Resistance in Klebsiella pneumoniae Using Publicly Available Genomic Data*
 
 This document provides ready-to-present scientific dissemination materials fulfilling **Deliverable 8** of the research framework.
@@ -13,12 +13,12 @@ SLIDE 1: TITLE SLIDE
 ================================================================================
 TITLE: Genome-Based Surveillance, Characterisation and Phylogenetic Analysis of
        Antimicrobial Resistance in Klebsiella pneumoniae Using Publicly Available Data
-SUBTITLE: Introducing PROJECT AEGIS 2.0 (Advanced Genomic Epidemiology & Intelligence System)
+SUBTITLE: Introducing PROJECT AEGIS (Advanced Genomic Epidemiology & Intelligence System)
 AUTHORS: Computational Genomics & Bioinformatics Research Consortium
 DATE: 2026 / Academic Symposium
 
 SPEAKER NOTES:
-"Good morning, everyone. Today I am presenting AEGIS 2.0, a reproducible genomic
+"Good morning, everyone. Today I am presenting AEGIS, a reproducible genomic
 surveillance platform investigating the population structure, plasmid dynamics,
 and antimicrobial resistance determinants of public Klebsiella pneumoniae genomes."
 ================================================================================
@@ -147,7 +147,7 @@ SPEAKER NOTES:
 outstanding concordance for carbapenems, while colistin highlights the necessity
 of ongoing phenotypic surveillance."
 ================================================================================
-SLIDE 10: CONCLUSION & AEGIS 2.0 PLATFORM
+SLIDE 10: CONCLUSION & AEGIS PLATFORM
 ================================================================================
 HEADER: Summary, Open Deliverables & Impact
 DELIVERABLES:
@@ -157,7 +157,7 @@ DELIVERABLES:
 ✔ Containerized Docker Compose deployment ready for global deployment.
 
 SPEAKER NOTES:
-"Project AEGIS 2.0 demonstrates how open genomic data, reproducible pipelines,
+"Project AEGIS demonstrates how open genomic data, reproducible pipelines,
 and modern web intelligence can bridge computational biology with public health
 action. Thank you, and I welcome your questions."
 ================================================================================
@@ -169,7 +169,7 @@ action. Thank you, and I welcome your questions."
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                   PROJECT AEGIS 2.0                                    │
+│                                   PROJECT AEGIS                                    │
 │   Genome-Based Surveillance, Characterisation and Phylogenetic Analysis of             │
 │   Antimicrobial Resistance in Klebsiella pneumoniae Using Publicly Available Data      │
 │   Authors: Senior Bioinformatics & Computational Biology Engineering Group              │
@@ -203,3 +203,4 @@ action. Thank you, and I welcome your questions."
 │   CheckM2 > 95% complete│                              │ • Open GitHub repository      │
 └─────────────────────────┴──────────────────────────────┴───────────────────────────────┘
 ```
+

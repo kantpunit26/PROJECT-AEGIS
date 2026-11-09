@@ -14,7 +14,7 @@ class NCBIDataAcquisitionService:
     def __init__(self, api_key: Optional[str] = None, email: Optional[str] = None):
         self.api_key = api_key or settings.NCBI_API_KEY
         self.email = email or settings.NCBI_EMAIL
-        self.headers = {"User-Agent": f"AEGIS-2.0 ({self.email})"}
+        self.headers = {"User-Agent": f"AEGIS ({self.email})"}
         if self.api_key:
             self.headers["api-key"] = self.api_key
 

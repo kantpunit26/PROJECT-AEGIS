@@ -1,8 +1,8 @@
-# PROJECT AEGIS 2.0 — ARCHITECTURE SPECIFICATION
+# PROJECT AEGIS — ARCHITECTURE SPECIFICATION
 
 ## 1. System Overview
 
-PROJECT AEGIS 2.0 is structured as a decoupled, microservices-ready modular monolith. It provides high scientific reproducibility, complete audit trails, spatial indexing, and automated pipeline dispatch.
+PROJECT AEGIS is structured as a decoupled, microservices-ready modular monolith. It provides high scientific reproducibility, complete audit trails, spatial indexing, and automated pipeline dispatch.
 
 ```
 +-------------------------------------------------------------------------+

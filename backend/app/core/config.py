@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings
 from pydantic import AnyHttpUrl, validator
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "PROJECT AEGIS 2.0"
+    PROJECT_NAME: str = "PROJECT AEGIS"
     VERSION: str = "2.0.0"
     API_V1_STR: str = "/api/v1"
     DEBUG: bool = True

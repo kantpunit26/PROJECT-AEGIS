@@ -1,4 +1,4 @@
-# PROJECT AEGIS 2.0 — BACKUP AND DISASTER RECOVERY
+# PROJECT AEGIS — BACKUP AND DISASTER RECOVERY
 
 ## 1. Overview
 The platform maintains strict persistence for:

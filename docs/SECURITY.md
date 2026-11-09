@@ -1,8 +1,8 @@
-# PROJECT AEGIS 2.0 — SECURITY & PROVENANCE
+# PROJECT AEGIS — SECURITY & PROVENANCE
 
 ## 1. Threat Model & Safeguards
 
-PROJECT AEGIS 2.0 handles sensitive microbiological, clinical, and spatial epidemiological datasets.
+PROJECT AEGIS handles sensitive microbiological, clinical, and spatial epidemiological datasets.
 
 ### 1.1 Spatial Privacy & Coordinate Aggregation
 - Exact coordinates of private residences, hospital floors, or vulnerable wards are never stored.

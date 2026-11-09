@@ -1,6 +1,6 @@
-# PROJECT AEGIS 2.0 — API DOCUMENTATION
+# PROJECT AEGIS — API DOCUMENTATION
 
-The AEGIS 2.0 backend exposes an OpenAPI 3.1 compliant REST API under `/api/v1`.
+The AEGIS backend exposes an OpenAPI 3.1 compliant REST API under `/api/v1`.
 
 Interactive Swagger UI: `http://localhost:8000/docs`  
 ReDoc UI: `http://localhost:8000/redoc`

@@ -25,10 +25,10 @@ SCENES = [
         "tab": None,
         "is_card": True,
         "badge": "MISSION INITIALIZATION",
-        "title": "PROJECT AEGIS 2.0",
+        "title": "PROJECT AEGIS",
         "subtitle": "Advanced Genomic Epidemiology & Intelligence System",
-        "voice_text": "Welcome to Project AEGIS 2.0, the Advanced Genomic Epidemiology and Intelligence System. An enterprise research platform engineered for real-time antimicrobial resistance surveillance.",
-        "caption": "Project AEGIS 2.0 — Advanced Genomic Epidemiology & Intelligence System"
+        "voice_text": "Welcome to Project AEGIS, the Advanced Genomic Epidemiology and Intelligence System. An enterprise research platform engineered for real-time antimicrobial resistance surveillance.",
+        "caption": "Project AEGIS — Advanced Genomic Epidemiology & Intelligence System"
     },
     {
         "id": "scene_02_loading_matrix",
@@ -108,9 +108,9 @@ SCENES = [
         "tab": None,
         "is_card": True,
         "badge": "GLOBAL PRODUCTION READY",
-        "title": "PROJECT AEGIS 2.0",
+        "title": "PROJECT AEGIS",
         "subtitle": "The Future of Genomic Epidemiology & AMR Intelligence",
-        "voice_text": "From raw genomic sequences to WHO GLASS reporting and automated alerting. Project AEGIS 2.0: The Future of Genomic Epidemiology and AMR Intelligence.",
+        "voice_text": "From raw genomic sequences to WHO GLASS reporting and automated alerting. Project AEGIS: The Future of Genomic Epidemiology and AMR Intelligence.",
         "caption": "FastAPI • React • PostGIS • Nextflow • Docker Ready • WHO GLASS Compliant"
     }
 ]
@@ -375,7 +375,7 @@ def build_composed_frames():
 
             # System Quality Indicator
             draw.ellipse([(1790, 36), (1802, 48)], fill=(16, 185, 129))
-            draw.text((1814, 34), "AEGIS 2.0 ULTRA HD", fill=(226, 232, 240), font=get_font(12, bold=True))
+            draw.text((1814, 34), "AEGIS ULTRA HD", fill=(226, 232, 240), font=get_font(12, bold=True))
 
             # Bottom Subtitle / Live Narration Caption Bar
             caption_bar_y = 995

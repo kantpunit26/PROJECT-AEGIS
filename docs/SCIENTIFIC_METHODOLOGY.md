@@ -1,8 +1,8 @@
-# PROJECT AEGIS 2.0 — SCIENTIFIC METHODOLOGY
+# PROJECT AEGIS — SCIENTIFIC METHODOLOGY
 
 ## 1. Scope and Target Organisms
 
-PROJECT AEGIS 2.0 establishes automated surveillance pipelines focused initially on *Klebsiella pneumoniae*, one of the most critical World Health Organization (WHO) and CDC urgent AMR threats. The analytical architecture is designed to generalize to *Escherichia coli*, *Acinetobacter baumannii*, *Salmonella enterica*, *Staphylococcus aureus*, and *Enterococcus faecium*.
+PROJECT AEGIS establishes automated surveillance pipelines focused initially on *Klebsiella pneumoniae*, one of the most critical World Health Organization (WHO) and CDC urgent AMR threats. The analytical architecture is designed to generalize to *Escherichia coli*, *Acinetobacter baumannii*, *Salmonella enterica*, *Staphylococcus aureus*, and *Enterococcus faecium*.
 
 ---
 
@@ -20,7 +20,7 @@ Raw read and de novo assembly evaluation follows international standards:
 ## 3. Antimicrobial Resistance Determinant Profiling
 
 ### 3.1 AMRFinderPlus Integration
-AEGIS 2.0 incorporates NCBI AMRFinderPlus to classify:
+AEGIS incorporates NCBI AMRFinderPlus to classify:
 - **Core AMR Determinants**: Acquired resistance genes (e.g. carbapenemases: *bla*KPC, *bla*NDM, *bla*OXA-48-like, *bla*VIM, *bla*IMP; ESBLs: *bla*CTX-M-15, *bla*SHV-12).
 - **Point Mutations**: Chromosomal mutations conferring resistance to fluoroquinolones (GyrA: S83I, S83F; ParC: S80I), colistin (*mgrB* disruptions, *pmrAB*, *phoPQ*), and carbapenems (*ompK35*, *ompK36* porin loss).
 - **Stress Response & Virulence Factors**: Heavy metal resistance (copper *pco*, silver *sil*), yersiniabactin (*ybt*), aerobactin (*iuc*), and salmochelin (*iro*).
@@ -68,7 +68,7 @@ AEGIS 2.0 incorporates NCBI AMRFinderPlus to classify:
 
 ## 8. Genotype-to-Phenotype Susceptibility Concordance
 
-AEGIS 2.0 pairs Minimum Inhibitory Concentration (MIC) laboratory testing with genetic resistance predictions using CLSI M100 and EUCAST breakpoints.
+AEGIS pairs Minimum Inhibitory Concentration (MIC) laboratory testing with genetic resistance predictions using CLSI M100 and EUCAST breakpoints.
 Metrics computed:
 $$\text{Sensitivity} = \frac{TP}{TP + FN}, \quad \text{Specificity} = \frac{TN}{TN + FP}$$
 $$\text{Precision (PPV)} = \frac{TP}{TP + FP}, \quad \text{Concordance Rate} = \frac{TP + TN}{N}$$

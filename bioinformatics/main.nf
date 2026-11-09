@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 
 /*
 ========================================================================================
-   PROJECT AEGIS 2.0 — END-TO-END GENOMIC SURVEILLANCE MASTER PIPELINE
+   PROJECT AEGIS — END-TO-END GENOMIC SURVEILLANCE MASTER PIPELINE
    Advanced Genomic Epidemiology & Intelligence System
 ========================================================================================
 */
@@ -24,7 +24,7 @@ params.outdir           = "${projectDir}/../data/processed"
 workflow {
     log.info """
     ======================================================================
-    PROJECT AEGIS 2.0 — SCIENTIFIC BIOINFORMATICS WORKFLOW
+    PROJECT AEGIS — SCIENTIFIC BIOINFORMATICS WORKFLOW
     Organism Reference : ${params.organism}
     Target Assemblies  : ${params.assemblies}
     Output Directory   : ${params.outdir}

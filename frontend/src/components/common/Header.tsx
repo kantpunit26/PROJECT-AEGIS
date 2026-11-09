@@ -18,7 +18,7 @@ export const Header: React.FC<HeaderProps> = ({ systemHealth }) => {
         </div>
         <div>
           <div className="flex items-center space-x-2">
-            <span className="font-bold text-lg tracking-wider text-white">PROJECT AEGIS 2.0</span>
+            <span className="font-bold text-lg tracking-wider text-white">PROJECT AEGIS</span>
             <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-crimson-950 text-crimson-400 border border-crimson-800/60 font-semibold tracking-wider">
               AMR Intelligence
             </span>

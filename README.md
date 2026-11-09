@@ -1,4 +1,4 @@
-# PROJECT AEGIS 2.0
+# PROJECT AEGIS
 ### Advanced Genomic Epidemiology & Intelligence System
 
 [![Platform](https://img.shields.io/badge/Platform-AEGIS%202.0-8B0000.svg)](https://github.com/aegis-surveillance/aegis-2.0)
@@ -10,7 +10,7 @@
 
 ## 1. Executive Summary
 
-**PROJECT AEGIS 2.0** is an enterprise research-grade genomic epidemiology and antimicrobial resistance (AMR) intelligence platform. Designed from zero for molecular epidemiologists, computational biologists, and public health agencies, AEGIS 2.0 bridges raw high-throughput pathogen sequencing with spatial-temporal outbreak analytics, comparative genomics, plasmid reconstruction, and deterministic transmission modelling.
+**PROJECT AEGIS** is an enterprise research-grade genomic epidemiology and antimicrobial resistance (AMR) intelligence platform. Designed from zero for molecular epidemiologists, computational biologists, and public health agencies, AEGIS bridges raw high-throughput pathogen sequencing with spatial-temporal outbreak analytics, comparative genomics, plasmid reconstruction, and deterministic transmission modelling.
 
 Initially focused on high-priority multi-drug resistant (MDR) and extensively drug-resistant (XDR) ***Klebsiella pneumoniae***, the architecture scales across the ESCAPE pathogens (*Enterococcus faecium*, *Staphylococcus aureus*, *Klebsiella pneumoniae*, *Acinetobacter baumannii*, *Pseudomonas aeruginosa*, *Enterobacter* spp.) and *Salmonella enterica*.
 
@@ -50,7 +50,7 @@ Initially focused on high-priority multi-drug resistant (MDR) and extensively dr
 
 ```
                     +------------------------------------+
-                    |        PROJECT AEGIS 2.0           |
+                    |        PROJECT AEGIS           |
                     |   Scientific UI (React + Vite)     |
                     |  Three.js Globe / Deck.gl / D3.js  |
                     +-----------------+------------------+
@@ -82,7 +82,7 @@ Ensure Docker Desktop (with WSL2 on Windows or native Docker on Linux) is runnin
 
 ```bash
 # Clone and enter directory
-cd AEGIS-2.0
+cd AEGIS
 
 # Copy environment variables
 cp .env.example .env
@@ -130,5 +130,5 @@ npm run dev
 - [Changelog](docs/CHANGELOG.md)
 
 ---
-*AEGIS 2.0 is developed under scientific reproducibility and open computational epidemiology standards.*
+*AEGIS is developed under scientific reproducibility and open computational epidemiology standards.*
 

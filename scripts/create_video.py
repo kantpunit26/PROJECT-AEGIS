@@ -20,11 +20,11 @@ SCENES = [
         "id": "scene_01_intro",
         "tab": None,
         "is_card": True,
-        "title": "PROJECT AEGIS 2.0",
+        "title": "PROJECT AEGIS",
         "subtitle": "Advanced Genomic Epidemiology & Intelligence System",
         "badge": "AMR SURVEILLANCE PLATFORM",
-        "voice_text": "Welcome to Project AEGIS 2.0, the Advanced Genomic Epidemiology and Intelligence System. Designed from the ground up for high-priority antimicrobial resistance surveillance.",
-        "caption": "Project AEGIS 2.0 — Advanced Genomic Epidemiology & Intelligence System"
+        "voice_text": "Welcome to Project AEGIS, the Advanced Genomic Epidemiology and Intelligence System. Designed from the ground up for high-priority antimicrobial resistance surveillance.",
+        "caption": "Project AEGIS — Advanced Genomic Epidemiology & Intelligence System"
     },
     {
         "id": "scene_02_dashboard",
@@ -33,7 +33,7 @@ SCENES = [
         "title": "GLOBAL SURVEILLANCE HUB",
         "subtitle": "Real-Time Pathogen Tracking • Outbreak Detection • Multi-Drug Resistance",
         "badge": "SURVEILLANCE HUB",
-        "voice_text": "At its core, AEGIS 2.0 connects global pathogen data with interactive 3D geospatial intelligence, tracking high-risk Klebsiella pneumoniae clones and carbapenemase dissemination.",
+        "voice_text": "At its core, AEGIS connects global pathogen data with interactive 3D geospatial intelligence, tracking high-risk Klebsiella pneumoniae clones and carbapenemase dissemination.",
         "caption": "Real-time pathogen distribution, clinical isolate feeds, and active outbreak monitoring"
     },
     {
@@ -63,7 +63,7 @@ SCENES = [
         "title": "COMPARATIVE GENOMICS & CORE SNPS",
         "subtitle": "Core-Genome SNP Distance Matrix • IQ-TREE Maximum Likelihood",
         "badge": "COMPARATIVE GENOMICS",
-        "voice_text": "AEGIS 2.0 performs reference-guided core-genome SNP calling, pairwise distance heatmaps with outbreak threshold clustering, and maximum-likelihood phylogenetics.",
+        "voice_text": "AEGIS performs reference-guided core-genome SNP calling, pairwise distance heatmaps with outbreak threshold clustering, and maximum-likelihood phylogenetics.",
         "caption": "Pairwise core SNP distance heatmap, outbreak clustering threshold, and IQ-TREE phylogeny"
     },
     {
@@ -80,10 +80,10 @@ SCENES = [
         "id": "scene_07_outro",
         "tab": None,
         "is_card": True,
-        "title": "PROJECT AEGIS 2.0",
+        "title": "PROJECT AEGIS",
         "subtitle": "The Future of Genomic Epidemiology & AMR Intelligence",
         "badge": "REPRODUCIBLE RESEARCH",
-        "voice_text": "Empowering molecular epidemiology with Docker reproducibility, PostGIS spatial indexing, and WHO GLASS reporting. Project AEGIS 2.0: The Future of Genomic Intelligence.",
+        "voice_text": "Empowering molecular epidemiology with Docker reproducibility, PostGIS spatial indexing, and WHO GLASS reporting. Project AEGIS: The Future of Genomic Intelligence.",
         "caption": "FastAPI • React • PostGIS • Nextflow • Docker Ready • WHO GLASS Compliant"
     }
 ]
@@ -232,7 +232,7 @@ def build_composed_frames():
 
             # System Indicator
             draw.ellipse([(1820, 36), (1832, 48)], fill=(16, 185, 129))
-            draw.text((1842, 34), "AEGIS 2.0 LIVE", fill=(226, 232, 240), font=get_font(13, bold=True))
+            draw.text((1842, 34), "AEGIS LIVE", fill=(226, 232, 240), font=get_font(13, bold=True))
 
             # Bottom Subtitle / Narration Caption Bar
             caption_bar_y = 1000

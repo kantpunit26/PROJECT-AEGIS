@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 
 /*
 ========================================================================================
-   PROJECT AEGIS 2.0 — NCBI AMRFinderPlus PIPELINE
+   PROJECT AEGIS — NCBI AMRFinderPlus PIPELINE
    Identifies acquired resistance genes, point mutations, and virulence determinants
 ========================================================================================
 */

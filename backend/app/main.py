@@ -15,14 +15,14 @@ logger = logging.getLogger("aegis_backend")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Initializing PROJECT AEGIS 2.0 Backend & Database...")
+    logger.info("Initializing PROJECT AEGIS Backend & Database...")
     try:
         init_db()
         logger.info("Database initialized successfully.")
     except Exception as e:
         logger.error(f"Failed to auto-initialize database on startup: {e}")
     yield
-    logger.info("Shutting down PROJECT AEGIS 2.0 Backend...")
+    logger.info("Shutting down PROJECT AEGIS Backend...")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

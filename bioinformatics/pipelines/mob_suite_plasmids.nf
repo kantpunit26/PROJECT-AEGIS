@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 
 /*
 ========================================================================================
-   PROJECT AEGIS 2.0 — MOB-SUITE PLASMID RECONSTRUCTION PIPELINE
+   PROJECT AEGIS — MOB-SUITE PLASMID RECONSTRUCTION PIPELINE
    Disentangles chromosomal vs. plasmid contigs and determines replicon incompatibility
 ========================================================================================
 */

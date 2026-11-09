@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 
 /*
 ========================================================================================
-   PROJECT AEGIS 2.0 — CORE-GENOME SNP & PHYLOGENETICS PIPELINE
+   PROJECT AEGIS — CORE-GENOME SNP & PHYLOGENETICS PIPELINE
    Reference alignment (Snippy/Parsnp), SNP distance matrix, and IQ-TREE inference
 ========================================================================================
 */

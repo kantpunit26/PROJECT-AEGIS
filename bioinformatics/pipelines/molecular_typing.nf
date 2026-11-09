@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 
 /*
 ========================================================================================
-   PROJECT AEGIS 2.0 — MOLECULAR TYPING & VIRULENCE PIPELINE
+   PROJECT AEGIS — MOLECULAR TYPING & VIRULENCE PIPELINE
    Executes 7-gene Pasteur MLST and Kleborate capsule (K-locus) & siderophore profiling
 ========================================================================================
 */

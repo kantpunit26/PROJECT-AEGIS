@@ -78,7 +78,7 @@ def create_sample_datasets():
         f.write("GCA_013374895.1,Colistin,1.0,mg/L,S,EUCAST,Broth microdilution\n")
         f.write("GCA_013374895.1,Amikacin,256.0,mg/L,R,CLSI,Broth microdilution\n")
 
-    print("[AEGIS 2.0] Benchmark FASTA datasets, metadata manifest, and AST records generated successfully.")
+    print("[AEGIS] Benchmark FASTA datasets, metadata manifest, and AST records generated successfully.")
 
 if __name__ == "__main__":
     create_sample_datasets()

@@ -8,7 +8,7 @@ This document fulfills **Phase A** of the research methodology for the project:
 
 ### Literature Review Matrix Table
 
-| # | Author & Year | Publication & DOI | Dataset / Sample Size | Methods / Tools | Key Findings | Limitations & Caveats | Relevance to AEGIS 2.0 |
+| # | Author & Year | Publication & DOI | Dataset / Sample Size | Methods / Tools | Key Findings | Limitations & Caveats | Relevance to AEGIS |
 |---|---------------|-------------------|-----------------------|-----------------|--------------|-----------------------|------------------------|
 | **1** | **Wyres, K. L. et al. (2020)** | *Nature Reviews Microbiology*, 18(6), 344-359. | Review of >10,000 public *K. pneumoniae* genomes. | Population genomics, MLST, capsule (*cps*) typing, Kleborate. | Defined *K. pneumoniae* global population structure into distinct hospital-associated high-risk multidrug-resistant (MDR) clones (ST11, ST14, ST15, ST101, ST147, ST258, ST307) versus hypervirulent community clones (ST23, ST86 carrying K1/K2 capsules and aerobactin *iuc*). | High-risk MDR clones rarely shared virulence plasmids historically, though convergence is increasingly observed. | Directly informs our dual-risk scoring (virulence score 0–5, resistance score 0–3) and sequence-type classification in `typing_service.py` and `ComparativeGenomics.tsx`. |
 | **2** | **David, S. et al. (2019)** | *Nature Microbiology*, 4(11), 1919-1929. | 1,717 isolates across 244 European hospitals (EuSCAPE project). | Core-genome SNP calling, Bayesian phylogenetic reconstruction (BactDating), spatial clustering. | Carbapenemase-producing *K. pneumoniae* dissemination in Europe is driven by a very small number of epidemic lineages (ST11, ST15, ST101, ST258/512). Within-hospital transmission networks showed $\le 10\text{--}15$ core SNP differences. | Sampling was biased toward carbapenem-resistant isolates in tertiary referral centers; under-represents community carriage. | Directly supports our $\le 15$ SNP epidemiological outbreak clustering threshold in `comparative_service.py` and `SNPMatrixHeatmap.tsx`. |
@@ -24,8 +24,9 @@ This document fulfills **Phase A** of the research methodology for the project:
 ### Key Synthesis & Research Takeaways
 
 1. **Clonal vs. Horizontal Resistance**:
-   *K. pneumoniae* AMR dissemination occurs through a dual mechanism: (a) clonal expansion of high-risk sequence types (ST11, ST147, ST258), and (b) horizontal gene transfer of conjugative plasmids (e.g. IncX3 carrying *bla*NDM-5, IncFII carrying *bla*KPC-2). AEGIS 2.0 captures both mechanisms through core-SNP comparative genomics and MOB-suite plasmid characterization.
+   *K. pneumoniae* AMR dissemination occurs through a dual mechanism: (a) clonal expansion of high-risk sequence types (ST11, ST147, ST258), and (b) horizontal gene transfer of conjugative plasmids (e.g. IncX3 carrying *bla*NDM-5, IncFII carrying *bla*KPC-2). AEGIS captures both mechanisms through core-SNP comparative genomics and MOB-suite plasmid characterization.
 2. **Quality-Controlled Screening**:
    Publicly submitted genomes in NCBI Assembly vary widely in assembly quality. Predefined, documented QC rules (N50 $>50,000$ bp, length $5.0 - 5.8$ Mb, GC $57.0 - 57.5\%$, CheckM2 completeness $>95\%$, contamination $<5\%$) must be enforced prior to comparative analyses.
 3. **Genotype vs. Phenotype Concordance**:
    Genetic prediction identifies the presence of resistance determinants; it cannot guarantee clinical expression. Concordance benchmarking against EUCAST and CLSI standards with documented error rates (ME and VME) is essential for credible genomic epidemiology.
+
