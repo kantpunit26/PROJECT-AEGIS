@@ -46,13 +46,32 @@ app.add_middleware(
 # Attach API v1 Router
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
-@app.get("/", summary="Root Status")
-def root():
-    return {
-        "system": settings.PROJECT_NAME,
-        "version": settings.VERSION,
-        "status": "active",
-        "docs": "/docs",
-        "api_v1": settings.API_V1_STR
-    }
+# Serve compiled Frontend in production if present, otherwise API status
+import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
+if os.path.exists(os.path.join(frontend_dist, "index.html")):
+    assets_dir = os.path.join(frontend_dist, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa(full_path: str):
+        target = os.path.join(frontend_dist, full_path)
+        if full_path and os.path.isfile(target):
+            return FileResponse(target)
+        return FileResponse(os.path.join(frontend_dist, "index.html"))
+else:
+    @app.get("/", summary="Root Status")
+    def root():
+        return {
+            "system": settings.PROJECT_NAME,
+            "version": settings.VERSION,
+            "status": "active",
+            "docs": "/docs",
+            "api_v1": settings.API_V1_STR
+        }
+
 
