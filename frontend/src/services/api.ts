@@ -8,7 +8,8 @@ import {
   SEIRSimulationResult
 } from '../types';
 
-const API_BASE = '/api/v1';
+const metaEnv = (import.meta as any).env;
+const API_BASE = (metaEnv?.VITE_API_URL ? String(metaEnv.VITE_API_URL).replace(/\/$/, '') : '') + '/api/v1';
 
 export const api = {
   // System Health
