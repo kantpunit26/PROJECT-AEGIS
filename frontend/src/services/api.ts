@@ -83,6 +83,36 @@ export const api = {
     return res.json();
   },
 
+  async getCircularAtlas() {
+    const res = await fetch(`${API_BASE}/comparative/circular-atlas`);
+    return res.json();
+  },
+
+  async getMinimumSpanningTree() {
+    const res = await fetch(`${API_BASE}/comparative/minimum-spanning-tree`);
+    return res.json();
+  },
+
+  async getTimeScaledTree() {
+    const res = await fetch(`${API_BASE}/comparative/time-scaled-tree`);
+    return res.json();
+  },
+
+  async getBayesianSkyline() {
+    const res = await fetch(`${API_BASE}/comparative/bayesian-skyline`);
+    return res.json();
+  },
+
+  async getPanGenomeMatrix() {
+    const res = await fetch(`${API_BASE}/comparative/pan-genome-matrix`);
+    return res.json();
+  },
+
+  async getLinearSynteny() {
+    const res = await fetch(`${API_BASE}/comparative/linear-synteny`);
+    return res.json();
+  },
+
   // Plasmids
   async getPlasmidSummary() {
     const res = await fetch(`${API_BASE}/plasmids/summary`);
@@ -91,6 +121,16 @@ export const api = {
 
   async getPlasmidMatrix() {
     const res = await fetch(`${API_BASE}/plasmids/matrix`);
+    return res.json();
+  },
+
+  async getMobilizationSankey() {
+    const res = await fetch(`${API_BASE}/plasmids/sankey`);
+    return res.json();
+  },
+
+  async getPartitionedHeatmaps() {
+    const res = await fetch(`${API_BASE}/plasmids/heatmaps`);
     return res.json();
   },
 

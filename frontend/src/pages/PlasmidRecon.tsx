@@ -1,21 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../services/api';
+import { MobilizationSankeyData, PartitionedResistomeData } from '../types';
+import { ResistomeMobilizationSankey } from '../components/charts/ResistomeMobilizationSankey';
+import { ChromosomeVsPlasmidHeatmap } from '../components/charts/ChromosomeVsPlasmidHeatmap';
 import { SlidersHorizontal, Layers, Share2, ShieldAlert } from 'lucide-react';
 
 export const PlasmidRecon: React.FC = () => {
   const [summary, setSummary] = useState<any | null>(null);
   const [matrixData, setMatrixData] = useState<any | null>(null);
+  const [sankeyData, setSankeyData] = useState<MobilizationSankeyData | null>(null);
+  const [heatmapData, setHeatmapData] = useState<PartitionedResistomeData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadPlasmids() {
       try {
-        const [sum, mat] = await Promise.all([
+        const [sum, mat, sankey, heatmaps] = await Promise.all([
           api.getPlasmidSummary(),
           api.getPlasmidMatrix(),
+          api.getMobilizationSankey(),
+          api.getPartitionedHeatmaps(),
         ]);
         setSummary(sum);
         setMatrixData(mat);
+        setSankeyData(sankey);
+        setHeatmapData(heatmaps);
       } catch (err) {
         console.error('Failed to load plasmid data:', err);
       } finally {
@@ -31,7 +40,7 @@ export const PlasmidRecon: React.FC = () => {
         <div>
           <h1 className="text-xl font-bold text-white tracking-wide">Plasmid Characterization & MOB-Suite</h1>
           <p className="text-xs text-slate-400">
-            Reconstructed extrachromosomal replicon incompatibility typing and chromosome-vs-plasmid AMR partitioning
+            Reconstructed extrachromosomal replicon incompatibility typing, resistome mobilization flows, and chromosome-vs-plasmid partitioning
           </p>
         </div>
       </div>
@@ -59,6 +68,12 @@ export const PlasmidRecon: React.FC = () => {
         </div>
       </div>
 
+      {/* Resistome Mobilization Alluvial / Sankey Flow Diagram */}
+      {sankeyData && <ResistomeMobilizationSankey data={sankeyData} />}
+
+      {/* Dual-Panel Chromosome vs. Plasmid Partitioned Resistome Heatmaps */}
+      {heatmapData && <ChromosomeVsPlasmidHeatmap data={heatmapData} />}
+
       {/* Chromosome vs. Plasmid Matrix */}
       <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-5 space-y-4">
         <div>
@@ -67,7 +82,7 @@ export const PlasmidRecon: React.FC = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-xs font-mono border-collapse">
+          <table className="w-full min-w-[560px] text-xs font-mono border-collapse">
             <thead>
               <tr className="border-b border-slate-800 text-slate-500 text-[11px] uppercase">
                 <th className="py-2.5 px-4 text-left">Antimicrobial Class</th>
@@ -77,7 +92,7 @@ export const PlasmidRecon: React.FC = () => {
                 <th className="py-2.5 px-4 text-right">Plasmid Localization (%)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y border-slate-800/60">
               {matrixData?.data?.map((row: any) => (
                 <tr key={row.drug_class} className="hover:bg-slate-800/40 transition-colors">
                   <td className="py-2.5 px-4 font-semibold text-slate-200">{row.drug_class}</td>
@@ -98,4 +113,3 @@ export const PlasmidRecon: React.FC = () => {
     </div>
   );
 };
-

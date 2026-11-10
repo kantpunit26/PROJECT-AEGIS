@@ -148,31 +148,31 @@ export const Reports: React.FC = () => {
           {alerts.map((al) => (
             <div
               key={al.id}
-              className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-start justify-between gap-4 font-mono text-xs"
+              className="p-3.5 sm:p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-mono text-xs"
             >
-              <div className="flex items-start space-x-3">
-                <div className="p-2 bg-crimson-900/40 rounded-lg text-crimson-400 mt-0.5 border border-crimson-800/60">
+              <div className="flex items-start space-x-3 w-full">
+                <div className="p-2 bg-crimson-900/40 rounded-lg text-crimson-400 mt-0.5 border border-crimson-800/60 shrink-0">
                   <ShieldAlert className="w-5 h-5 animate-pulse" />
                 </div>
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <span className="font-bold text-white text-sm">{al.title}</span>
-                    <span className="px-2 py-0.5 rounded text-[10px] bg-crimson-900 text-crimson-300 font-bold uppercase">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                    <span className="font-bold text-white text-xs sm:text-sm">{al.title}</span>
+                    <span className="px-2 py-0.5 rounded text-[9px] sm:text-[10px] bg-crimson-900 text-crimson-300 font-bold uppercase">
                       {al.severity}
                     </span>
-                    <span className="text-slate-500 text-[11px]">{new Date(al.created_at).toLocaleDateString()}</span>
+                    <span className="text-slate-500 text-[10px] sm:text-[11px]">{new Date(al.created_at).toLocaleDateString()}</span>
                   </div>
-                  <p className="text-xs text-slate-300 font-sans mt-1.5 max-w-3xl leading-relaxed">{al.message}</p>
+                  <p className="text-[11px] sm:text-xs text-slate-300 font-sans mt-1.5 max-w-3xl leading-relaxed">{al.message}</p>
                   {al.isolate_accessions && (
-                    <div className="mt-2 text-[11px] text-slate-400">
+                    <div className="mt-2 text-[10px] sm:text-[11px] text-slate-400">
                       Cluster isolates: <span className="text-slate-200 font-bold">{al.isolate_accessions.join(', ')}</span>
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2 shrink-0">
-                <span className="px-2.5 py-1 rounded bg-slate-800 text-slate-300 text-[11px] border border-slate-700">
+              <div className="flex items-center space-x-2 shrink-0 self-end sm:self-auto">
+                <span className="px-2.5 py-1 rounded bg-slate-800 text-slate-300 text-[10px] sm:text-[11px] border border-slate-700">
                   {al.acknowledged ? 'Acknowledged' : 'Active Warning'}
                 </span>
               </div>

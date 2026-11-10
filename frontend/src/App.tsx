@@ -25,9 +25,11 @@ export const App: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<NavTab>(getTabFromUrl());
   const [systemHealth, setSystemHealth] = useState<any>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleTabChange = (tab: NavTab) => {
     setActiveTab(tab);
+    setIsMobileMenuOpen(false);
     const url = new URL(window.location.href);
     url.searchParams.set('tab', tab);
     window.history.pushState({}, '', url.toString());
@@ -72,11 +74,21 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-      <Header systemHealth={systemHealth} />
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar activeTab={activeTab} onTabChange={handleTabChange} alertCount={1} />
-        <main className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-          <div className="max-w-7xl mx-auto">{renderActivePage()}</div>
+      <Header
+        systemHealth={systemHealth}
+        isMobileMenuOpen={isMobileMenuOpen}
+        onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
+      />
+      <div className="flex flex-1 overflow-hidden relative">
+        <Sidebar
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          alertCount={1}
+          isMobileOpen={isMobileMenuOpen}
+          onCloseMobile={() => setIsMobileMenuOpen(false)}
+        />
+        <main className="flex-1 overflow-y-auto p-3 sm:p-5 lg:p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 w-full">
+          <div className="max-w-7xl mx-auto w-full">{renderActivePage()}</div>
         </main>
       </div>
     </div>
@@ -84,4 +96,3 @@ export const App: React.FC = () => {
 };
 
 export default App;
-

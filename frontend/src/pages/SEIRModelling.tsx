@@ -101,7 +101,7 @@ export const SEIRModelling: React.FC = () => {
 
       {/* Simulation Results Header */}
       {simResult && (
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-xl space-y-1">
             <div className="text-xs font-mono uppercase text-slate-400">Basic Reproduction Number (R0)</div>
             <div className={`text-2xl font-bold font-mono ${simResult.r0 > 1.0 ? 'text-crimson-400' : 'text-emerald-400'}`}>
@@ -137,14 +137,14 @@ export const SEIRModelling: React.FC = () => {
       )}
 
       {/* SVG Time-Series Trajectory Plot */}
-      <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-5 space-y-4">
-        <div className="flex justify-between items-center">
+      <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 sm:p-5 space-y-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div>
             <h3 className="text-sm font-semibold text-white">Transmission Compartment Trajectories</h3>
             <p className="text-xs text-slate-400">Temporal population projection over {params.simulation_days} days</p>
           </div>
 
-          <div className="flex items-center space-x-4 text-xs font-mono">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-mono">
             <div className="flex items-center space-x-1.5">
               <span className="w-3 h-1 bg-slate-400 inline-block"></span>
               <span className="text-slate-300">Susceptible (S)</span>
@@ -165,8 +165,8 @@ export const SEIRModelling: React.FC = () => {
         </div>
 
         {simResult && (
-          <div className="w-full overflow-x-auto flex justify-center">
-            <svg width={width} height={height} className="select-none font-mono text-[10px]">
+          <div className="w-full flex justify-center overflow-hidden">
+            <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto max-h-[340px] select-none font-mono text-[10px]">
               {/* Axes */}
               <line
                 x1={padding}
@@ -240,13 +240,13 @@ export const SEIRModelling: React.FC = () => {
       </div>
 
       {/* Parameter Sliders Control Panel */}
-      <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-5 space-y-4">
+      <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 sm:p-5 space-y-4">
         <div className="flex items-center space-x-2">
           <Sliders className="w-4 h-4 text-crimson-400" />
           <h3 className="text-sm font-semibold text-white">Dynamic Epidemiological Parameters</h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 font-mono text-xs">
           {/* Transmission beta */}
           <div className="space-y-1.5">
             <div className="flex justify-between">

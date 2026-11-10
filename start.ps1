@@ -1,4 +1,4 @@
-﻿# PROJECT AEGIS — PowerShell Quick Launcher
+# PROJECT AEGIS — PowerShell Quick Launcher
 
 Write-Host "===================================================" -ForegroundColor Cyan
 Write-Host "Starting PROJECT AEGIS..." -ForegroundColor Green
@@ -21,3 +21,4 @@ Write-Host "AEGIS is running!" -ForegroundColor Green
 Write-Host " - Web Dashboard:   http://localhost:5173" -ForegroundColor White
 Write-Host " - Interactive API: http://localhost:8000/docs" -ForegroundColor White
 Write-Host "===================================================`n" -ForegroundColor Cyan
+

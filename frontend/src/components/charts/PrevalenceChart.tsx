@@ -36,7 +36,7 @@ export const PrevalenceChart: React.FC<PrevalenceChartProps> = ({ determinants, 
       <div className="space-y-3 max-h-[380px] overflow-y-auto pr-2">
         {determinants.map((det) => (
           <div key={det.gene_symbol} className="space-y-1">
-            <div className="flex justify-between items-center text-xs">
+            <div className="flex flex-wrap justify-between items-center gap-1 text-xs">
               <div className="flex items-center space-x-2">
                 <span className="font-mono font-bold text-slate-200">{det.gene_symbol}</span>
                 <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">

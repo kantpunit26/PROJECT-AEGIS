@@ -111,7 +111,7 @@ export const Isolates: React.FC = () => {
       {/* Main Isolates Table */}
       <div className="bg-slate-900/60 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs font-mono border-collapse">
+          <table className="w-full min-w-[780px] text-xs font-mono border-collapse">
             <thead>
               <tr className="border-b border-slate-800 text-slate-500 text-[11px] uppercase bg-slate-950/40">
                 <th className="text-left py-3 px-4">Accession</th>
@@ -167,12 +167,12 @@ export const Isolates: React.FC = () => {
 
       {/* Isolate Detail Modal Drawer */}
       {selectedIsolate && (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-xl w-full max-w-4xl max-h-[92vh] overflow-y-auto p-4 sm:p-6 space-y-5 sm:space-y-6 shadow-2xl">
             <div className="flex justify-between items-start border-b border-slate-800 pb-4">
               <div>
-                <div className="flex items-center space-x-3">
-                  <span className="text-xl font-bold font-mono text-white">{selectedIsolate.accession}</span>
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                  <span className="text-lg sm:text-xl font-bold font-mono text-white">{selectedIsolate.accession}</span>
                   {getQcBadge(selectedIsolate.qc_status)}
                 </div>
                 <p className="text-xs text-slate-400 mt-1">
@@ -181,7 +181,7 @@ export const Isolates: React.FC = () => {
               </div>
               <button
                 onClick={() => setSelectedIsolate(null)}
-                className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+                className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -211,7 +211,7 @@ export const Isolates: React.FC = () => {
             <div className="space-y-2">
               <h3 className="text-sm font-semibold text-white">Experimental Antimicrobial Susceptibility (AST)</h3>
               <div className="border border-slate-800 rounded-lg overflow-x-auto">
-                <table className="w-full text-xs font-mono">
+                <table className="w-full text-xs font-mono min-w-[500px]">
                   <thead>
                     <tr className="border-b border-slate-800 text-slate-500 bg-slate-950/60">
                       <th className="py-2 px-3 text-left">Antibiotic</th>
@@ -244,12 +244,12 @@ export const Isolates: React.FC = () => {
                 <h3 className="text-sm font-semibold text-white">MOB-Suite Reconstructed Plasmids</h3>
                 <div className="space-y-2">
                   {selectedIsolate.plasmids.map((p: any) => (
-                    <div key={p.plasmid_id} className="p-3 bg-slate-950 border border-slate-800 rounded-lg font-mono text-xs flex justify-between items-center">
+                    <div key={p.plasmid_id} className="p-3 bg-slate-950 border border-slate-800 rounded-lg font-mono text-xs flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                       <div>
                         <div className="font-bold text-slate-200">{p.plasmid_id} ({p.mobility})</div>
                         <div className="text-[11px] text-slate-400">Replicons: {p.replicon_types?.join(', ') || 'Unknown'}</div>
                       </div>
-                      <div className="text-right">
+                      <div className="sm:text-right">
                         <span className="text-slate-400">{p.predicted_length?.toLocaleString()} bp</span>
                         {p.associated_amr_genes && (
                           <div className="text-[11px] text-crimson-400">{p.associated_amr_genes.join(', ')}</div>

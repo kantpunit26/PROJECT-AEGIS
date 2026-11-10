@@ -25,3 +25,28 @@ def get_phylogenetic_tree(organism: str = "Klebsiella pneumoniae", db: Session =
 def get_circular_genome(genome_size: int = 5333942, bins: int = 100):
     return comparative_service.get_circular_genome_coordinates(genome_size=genome_size, bins=bins)
 
+@router.get("/circular-atlas", summary="Multi-Track Circular Genome Atlas (Circos/BRIG)")
+def get_circular_genome_atlas(genome_size: int = 5333942, bins: int = 120):
+    return comparative_service.get_circular_genome_atlas(genome_size=genome_size, bins=bins)
+
+@router.get("/minimum-spanning-tree", summary="Minimum Spanning Tree (MST / GrapeTree Outbreak Network)")
+def get_minimum_spanning_tree():
+    return comparative_service.get_minimum_spanning_tree()
+
+@router.get("/time-scaled-tree", summary="Time-Scaled Phylodynamic Tree (BEAST / Molecular Clock)")
+def get_time_scaled_tree():
+    return comparative_service.get_time_scaled_phylogeny()
+
+@router.get("/bayesian-skyline", summary="Bayesian Skyline Plot (BSP / Effective Population Size)")
+def get_bayesian_skyline():
+    return comparative_service.get_bayesian_skyline_data()
+
+@router.get("/pan-genome-matrix", summary="Phylogeny Aligned Multi-Panel Matrix (iTOL style)")
+def get_pan_genome_matrix():
+    return comparative_service.get_pan_genome_matrix()
+
+@router.get("/linear-synteny", summary="Linear Genetic Synteny & Resistance Island Maps (Easyfig style)")
+def get_linear_synteny():
+    return comparative_service.get_linear_synteny_data()
+
+

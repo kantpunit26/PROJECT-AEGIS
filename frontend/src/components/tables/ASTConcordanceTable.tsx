@@ -17,7 +17,7 @@ export const ASTConcordanceTable: React.FC<ASTConcordanceTableProps> = ({ metric
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-xs font-mono border-collapse">
+        <table className="w-full min-w-[680px] text-xs font-mono border-collapse">
           <thead>
             <tr className="border-b border-slate-800 text-slate-500 text-[11px] uppercase">
               <th className="text-left py-2 px-3">Antimicrobial</th>

@@ -10,7 +10,8 @@ import {
   AlertTriangle,
   TrendingUp,
   SlidersHorizontal,
-  FolderGit2
+  FolderGit2,
+  X
 } from 'lucide-react';
 
 export type NavTab =
@@ -29,9 +30,17 @@ interface SidebarProps {
   activeTab: NavTab;
   onTabChange: (tab: NavTab) => void;
   alertCount?: number;
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, alertCount = 1 }) => {
+export const Sidebar: React.FC<SidebarProps> = ({
+  activeTab,
+  onTabChange,
+  alertCount = 1,
+  isMobileOpen = false,
+  onCloseMobile,
+}) => {
   const navItems = [
     { id: 'dashboard', label: 'Surveillance Hub', icon: Globe },
     { id: 'surveillance', label: '3D Geospatial', icon: Layers },
@@ -45,11 +54,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, alertC
     { id: 'reports', label: 'Alerts & Exports', icon: FileSpreadsheet, badge: alertCount },
   ];
 
-  return (
-    <aside className="w-64 border-r border-slate-800 bg-slate-900/60 backdrop-blur-md flex flex-col justify-between p-3 select-none">
+  const handleSelectTab = (tabId: NavTab) => {
+    onTabChange(tabId);
+    if (onCloseMobile) {
+      onCloseMobile();
+    }
+  };
+
+  const navContent = (
+    <>
       <div className="space-y-1">
-        <div className="px-3 py-2 text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
-          Surveillance Modules
+        <div className="flex items-center justify-between px-3 py-2 text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
+          <span>Surveillance Modules</span>
+          {onCloseMobile && (
+            <button
+              onClick={onCloseMobile}
+              className="lg:hidden p-1 text-slate-400 hover:text-white rounded"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -57,19 +81,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, alertC
           return (
             <button
               key={item.id}
-              onClick={() => onTabChange(item.id as NavTab)}
+              onClick={() => handleSelectTab(item.id as NavTab)}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
                 isActive
                   ? 'bg-crimson-900/30 text-white border border-crimson-700/50 shadow-sm shadow-crimson-950'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
               }`}
             >
-              <div className="flex items-center space-x-2.5">
-                <Icon className={`w-4 h-4 ${isActive ? 'text-crimson-500' : 'text-slate-400'}`} />
-                <span>{item.label}</span>
+              <div className="flex items-center space-x-2.5 truncate">
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-crimson-500' : 'text-slate-400'}`} />
+                <span className="truncate">{item.label}</span>
               </div>
               {item.badge && item.badge > 0 && (
-                <span className="px-1.5 py-0.5 text-[10px] font-mono bg-crimson-600 text-white rounded-full font-bold">
+                <span className="px-1.5 py-0.5 text-[10px] font-mono bg-crimson-600 text-white rounded-full font-bold ml-2">
                   {item.badge}
                 </span>
               )}
@@ -92,7 +116,31 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, alertC
           <span className="text-emerald-400">K. pneumoniae</span>
         </div>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop Persistent Sidebar (>= 1024px) */}
+      <aside className="hidden lg:flex w-64 border-r border-slate-800 bg-slate-900/60 backdrop-blur-md flex-col justify-between p-3 select-none shrink-0">
+        {navContent}
+      </aside>
+
+      {/* Mobile Drawer Overlay (< 1024px) */}
+      {isMobileOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 flex">
+          {/* Backdrop Blur Dimmer */}
+          <div
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+            onClick={onCloseMobile}
+          />
+
+          {/* Drawer Panel */}
+          <div className="relative w-72 max-w-[85vw] bg-slate-900/95 border-r border-slate-800 p-4 flex flex-col justify-between shadow-2xl z-10 overflow-y-auto">
+            {navContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
-

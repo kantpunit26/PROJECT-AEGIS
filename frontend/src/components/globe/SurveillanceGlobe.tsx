@@ -120,7 +120,7 @@ export const SurveillanceGlobe: React.FC<SurveillanceGlobeProps> = ({ isolates, 
 
     scene.add(markerGroup);
 
-    // 7. Mouse Drag Interaction & Raycasting
+    // 7. Mouse & Touch Drag Interaction & Raycasting
     let isDragging = false;
     let prevMousePosition = { x: 0, y: 0 };
 
@@ -165,9 +165,40 @@ export const SurveillanceGlobe: React.FC<SurveillanceGlobeProps> = ({ isolates, 
       isDragging = false;
     };
 
+    // Mobile touch interaction
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        prevMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (isDragging && e.touches.length === 1) {
+        const deltaX = e.touches[0].clientX - prevMousePosition.x;
+        const deltaY = e.touches[0].clientY - prevMousePosition.y;
+        globeMesh.rotation.y += deltaX * 0.005;
+        wireframe.rotation.y += deltaX * 0.005;
+        markerGroup.rotation.y += deltaX * 0.005;
+
+        globeMesh.rotation.x += deltaY * 0.005;
+        wireframe.rotation.x += deltaY * 0.005;
+        markerGroup.rotation.x += deltaY * 0.005;
+
+        prevMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    };
+
+    const onTouchEnd = () => {
+      isDragging = false;
+    };
+
     container.addEventListener('mousedown', onMouseDown);
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
+    container.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+    window.addEventListener('touchend', onTouchEnd);
 
     // 8. Animation Loop (Continuous subtle idle rotation)
     let animationFrameId: number;
@@ -198,6 +229,9 @@ export const SurveillanceGlobe: React.FC<SurveillanceGlobeProps> = ({ isolates, 
       container.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
+      container.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
       window.removeEventListener('resize', handleResize);
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
@@ -207,37 +241,37 @@ export const SurveillanceGlobe: React.FC<SurveillanceGlobeProps> = ({ isolates, 
   }, [isolates]);
 
   return (
-    <div className="relative w-full h-full min-h-[460px] bg-slate-950/70 rounded-xl border border-slate-800 overflow-hidden">
-      <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+    <div className="relative w-full h-full min-h-[300px] sm:min-h-[420px] lg:min-h-[460px] bg-slate-950/70 rounded-xl border border-slate-800 overflow-hidden touch-none">
+      <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing select-none" />
 
       {/* 3D Globe Legend Overlay */}
-      <div className="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-md border border-slate-700/60 p-3 rounded-lg text-xs space-y-2 pointer-events-none">
+      <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-slate-900/85 backdrop-blur-md border border-slate-700/60 p-2 sm:p-3 rounded-lg text-[10px] sm:text-xs space-y-1.5 sm:space-y-2 pointer-events-none max-w-[200px] sm:max-w-none">
         <div className="font-semibold text-slate-200">Global Pathogen Distribution</div>
-        <div className="flex items-center space-x-2 text-[11px]">
-          <span className="w-2.5 h-2.5 rounded-full bg-crimson-600 inline-block"></span>
-          <span className="text-slate-300">Carbapenemase-Producing (CRKP)</span>
+        <div className="flex items-center space-x-2 text-[10px] sm:text-[11px]">
+          <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-crimson-600 inline-block shrink-0"></span>
+          <span className="text-slate-300">Carbapenemase (CRKP)</span>
         </div>
-        <div className="flex items-center space-x-2 text-[11px]">
-          <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span>
-          <span className="text-slate-300">Colistin-Resistant (mcr / mgrB)</span>
+        <div className="flex items-center space-x-2 text-[10px] sm:text-[11px]">
+          <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-purple-500 inline-block shrink-0"></span>
+          <span className="text-slate-300">Colistin-Resistant</span>
         </div>
-        <div className="flex items-center space-x-2 text-[11px]">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+        <div className="flex items-center space-x-2 text-[10px] sm:text-[11px]">
+          <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-emerald-500 inline-block shrink-0"></span>
           <span className="text-slate-300">Wild-Type / Susceptible</span>
         </div>
       </div>
 
       {/* Hovered Isolate Tooltip */}
       {hoveredIsolate && (
-        <div className="absolute bottom-4 right-4 bg-slate-900/95 backdrop-blur-md border border-crimson-700/60 p-3.5 rounded-lg shadow-xl text-xs max-w-xs space-y-1 font-mono pointer-events-none">
-          <div className="font-bold text-white text-sm flex justify-between">
+        <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 left-2 sm:left-auto bg-slate-900/95 backdrop-blur-md border border-crimson-700/60 p-2.5 sm:p-3.5 rounded-lg shadow-xl text-xs max-w-xs space-y-1 font-mono pointer-events-none">
+          <div className="font-bold text-white text-xs sm:text-sm flex justify-between">
             <span>{hoveredIsolate.accession}</span>
             <span className="text-emerald-400">{hoveredIsolate.sequence_type || 'ST?'}</span>
           </div>
-          <div className="text-slate-400 text-[11px]">
+          <div className="text-slate-400 text-[10px] sm:text-[11px]">
             {hoveredIsolate.city}, {hoveredIsolate.country} ({hoveredIsolate.collection_year || 'N/A'})
           </div>
-          <div className="pt-1 text-[11px]">
+          <div className="pt-1 text-[10px] sm:text-[11px]">
             <span className="text-slate-400">AMR Cargo: </span>
             <span className="text-crimson-400 font-semibold">
               {hoveredIsolate.carbapenemases.length > 0 ? hoveredIsolate.carbapenemases.join(', ') : 'None detected'}

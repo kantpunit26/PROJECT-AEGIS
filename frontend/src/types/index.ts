@@ -143,3 +143,217 @@ export interface SEIRSimulationResult {
   peak_day: number;
   total_colonization_incidence: number;
 }
+
+export interface CircularAtlasBin {
+  bin_index: number;
+  position: number;
+  gc_content: number;
+  gc_skew: number;
+  cds_fwd: boolean;
+  cds_rev: boolean;
+  amr?: { name: string; mechanism: string; drug_class: string; type: string };
+  virulence?: { name: string; function: string; locus: string };
+  mge?: { name: string; type: string };
+  blast_clades: {
+    clade_1_st258: number;
+    clade_2_st11: number;
+    clade_3_st147: number;
+    clade_4_st15: number;
+    clade_5_st307: number;
+  };
+}
+
+export interface CircularAtlasHotspot {
+  id: string;
+  label: string;
+  position_bp: number;
+  bin_index: number;
+  category: string;
+  description: string;
+}
+
+export interface CircularAtlasData {
+  organism: string;
+  strain: string;
+  genome_size: number;
+  gc_mean: number;
+  total_bins: number;
+  bins: CircularAtlasBin[];
+  hotspots: CircularAtlasHotspot[];
+}
+
+export interface MSTNode {
+  id: string;
+  label: string;
+  sequence_type: string;
+  isolate_count: number;
+  carbapenemase?: string;
+  virulence_score?: number;
+  sources: Record<string, number>;
+  cluster: string;
+  x: number;
+  y: number;
+  radius: number;
+}
+
+export interface MSTEdge {
+  source: string;
+  target: string;
+  snp_distance: number;
+  outbreak_link: boolean;
+}
+
+export interface MSTData {
+  title: string;
+  method: string;
+  nodes: MSTNode[];
+  edges: MSTEdge[];
+  outbreak_halos: {
+    name: string;
+    center_x: number;
+    center_y: number;
+    radius_x: number;
+    radius_y: number;
+    snp_threshold: string;
+    color: string;
+  }[];
+}
+
+export interface TimeScaledLeaf {
+  id: string;
+  label: string;
+  ward: string;
+  date: string;
+  y: number;
+  x: number;
+  hpd_low: number;
+  hpd_high: number;
+  clade: string;
+  is_hcw?: boolean;
+}
+
+export interface TimeScaledTreeData {
+  title: string;
+  model: string;
+  mean_clock_rate: string;
+  tmrca: string;
+  timeline: { year: string; pos: number }[];
+  leaves: TimeScaledLeaf[];
+  internal_nodes: {
+    id: string;
+    x: number;
+    y: number;
+    hpd_low: number;
+    hpd_high: number;
+    posterior?: number;
+    label?: string;
+  }[];
+  tree_lines: { x1: number; y1: number; x2: number; y2: number }[];
+  wards_legend: { ward: string; color: string }[];
+}
+
+export interface SkylineClade {
+  clade_id: string;
+  name: string;
+  color: string;
+  years: number[];
+  median_ne: number[];
+  lower_hpd: number[];
+  upper_hpd: number[];
+  peak_year: number;
+  notes: string;
+}
+
+export interface BayesianSkylineData {
+  title: string;
+  y_axis_label: string;
+  x_axis_label: string;
+  clades: SkylineClade[];
+}
+
+export interface PanGenomeTaxon {
+  id: string;
+  strain: string;
+  year: number;
+  city: string;
+  mlst: string;
+  clade: string;
+  carb: string;
+}
+
+export interface PanGenomeMatrixData {
+  title: string;
+  taxa: PanGenomeTaxon[];
+  arg_headers: string[];
+  arg_matrix: boolean[][];
+  inc_headers: string[];
+  inc_matrix: boolean[][];
+  vir_headers: string[];
+  vir_matrix: boolean[][];
+}
+
+export interface SyntenyGene {
+  name: string;
+  label?: string;
+  start: number;
+  end: number;
+  strand: '+' | '-';
+  type: 'ARG' | 'MGE' | 'OTHER';
+  color: string;
+}
+
+export interface SyntenyLocus {
+  id: string;
+  name: string;
+  length_bp: number;
+  host_context: string;
+  target_site_duplication: string;
+  flanking_repeats: { left: string; right: string };
+  genes: SyntenyGene[];
+}
+
+export interface LinearSyntenyData {
+  title: string;
+  reference_standard: string;
+  loci: SyntenyLocus[];
+}
+
+export interface SankeyNode {
+  id: string;
+  name: string;
+  stage: number;
+  color: string;
+}
+
+export interface SankeyLink {
+  source: string;
+  target: string;
+  value: number;
+}
+
+export interface MobilizationSankeyData {
+  title: string;
+  nodes: SankeyNode[];
+  links: SankeyLink[];
+}
+
+export interface PartitionedResistomeGene {
+  name: string;
+  drug_class: string;
+  mechanism: string;
+  class_color: string;
+}
+
+export interface PartitionedResistomeData {
+  title: string;
+  isolates: string[];
+  chromosomal: {
+    genes: PartitionedResistomeGene[];
+    matrix: number[][];
+  };
+  plasmid: {
+    genes: PartitionedResistomeGene[];
+    matrix: number[][];
+  };
+}
+

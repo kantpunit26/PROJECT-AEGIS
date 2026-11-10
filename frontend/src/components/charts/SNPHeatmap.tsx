@@ -38,7 +38,7 @@ export const SNPHeatmap: React.FC<SNPHeatmapProps> = ({ data, outbreakThreshold 
           </p>
         </div>
 
-        <div className="flex items-center space-x-3 text-xs font-mono">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
           <div className="flex items-center space-x-1.5 bg-crimson-950/70 border border-crimson-700/60 px-2.5 py-1 rounded">
             <span className="w-2.5 h-2.5 rounded bg-crimson-600 inline-block animate-pulse"></span>
             <span className="text-crimson-300 font-semibold">&le; {outbreakThreshold} SNPs (Outbreak Link)</span>

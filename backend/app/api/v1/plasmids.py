@@ -14,6 +14,15 @@ def get_plasmid_summary(db: Session = Depends(get_db)):
 def get_context_matrix(db: Session = Depends(get_db)):
     return plasmid_service.get_chromosome_vs_plasmid_matrix(db)
 
+@router.get("/sankey", summary="ARG Mobilization Alluvial/Sankey Flows")
+def get_mobilization_sankey():
+    return plasmid_service.get_resistome_mobilization_sankey()
+
+@router.get("/heatmaps", summary="Partitioned Resistome Dual Heatmaps (Chromosome vs. Plasmid)")
+def get_partitioned_heatmaps():
+    return plasmid_service.get_chromosome_vs_plasmid_heatmaps()
+
+
 @router.get("/list", summary="List All Reconstructed Plasmids")
 def list_plasmids(db: Session = Depends(get_db)):
     plasmids = db.query(Plasmid).all()
