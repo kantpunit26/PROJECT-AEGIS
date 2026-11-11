@@ -63,19 +63,19 @@ export const App: React.FC = () => {
       case 'typing':
         return <AMRExplorer selectedOrganism={selectedOrganism} />;
       case 'comparative':
-        return <ComparativeGenomics />;
+        return <ComparativeGenomics selectedOrganism={selectedOrganism} />;
       case 'ast':
         return <ASTValidation selectedOrganism={selectedOrganism} />;
       case 'plasmids':
-        return <PlasmidRecon />;
+        return <PlasmidRecon selectedOrganism={selectedOrganism} />;
       case 'ai-engine':
         return <AIEngine selectedOrganism={selectedOrganism} />;
       case 'one-health':
-        return <OneHealth />;
+        return <OneHealth selectedOrganism={selectedOrganism} />;
       case 'modelling':
-        return <SEIRModelling />;
+        return <SEIRModelling selectedOrganism={selectedOrganism} />;
       case 'reports':
-        return <Reports />;
+        return <Reports selectedOrganism={selectedOrganism} />;
       default:
         return <Dashboard onNavigate={(tab) => handleTabChange(tab)} selectedOrganism={selectedOrganism} />;
     }

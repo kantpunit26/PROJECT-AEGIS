@@ -9,8 +9,11 @@ class PlasmidService:
     """MOB-suite replicon profiling, mobility typing, and chromosome-vs-plasmid AMR partitioning."""
 
     @staticmethod
-    def get_plasmid_summary(db: Session) -> Dict[str, Any]:
-        plasmids = db.query(Plasmid).all()
+    def get_plasmid_summary(db: Session, organism: Optional[str] = None) -> Dict[str, Any]:
+        query = db.query(Plasmid)
+        if organism:
+            query = query.join(Isolate, Plasmid.isolate_id == Isolate.id).filter(Isolate.organism.ilike(f"%{organism}%"))
+        plasmids = query.all()
         total_plasmids = len(plasmids)
         
         # Replicon family distribution
@@ -32,9 +35,12 @@ class PlasmidService:
         }
 
     @staticmethod
-    def get_chromosome_vs_plasmid_matrix(db: Session) -> Dict[str, Any]:
+    def get_chromosome_vs_plasmid_matrix(db: Session, organism: Optional[str] = None) -> Dict[str, Any]:
         """Calculates genomic context partitioning (Chromosome vs. Plasmid vs. Unknown) for AMR classes."""
-        determinants = db.query(AMRDeterminant).all()
+        query = db.query(AMRDeterminant)
+        if organism:
+            query = query.join(Isolate, AMRDeterminant.isolate_id == Isolate.id).filter(Isolate.organism.ilike(f"%{organism}%"))
+        determinants = query.all()
         classes = sorted(list(set(d.drug_class for d in determinants)))
 
         matrix = []
@@ -60,11 +66,95 @@ class PlasmidService:
         }
 
     @staticmethod
-    def get_resistome_mobilization_sankey() -> Dict[str, Any]:
+    def get_resistome_mobilization_sankey(organism: Optional[str] = None) -> Dict[str, Any]:
         """
-        Sankey (Alluvial) flow diagram tracking ARG mobilization from Klebsiella pneumoniae
-        clonal lineages through specific resistance gene subtypes to plasmid mobility status.
+        Sankey (Alluvial) flow diagram tracking ARG mobilization from clonal lineages
+        through specific resistance gene subtypes to plasmid mobility status.
         """
+        org_upper = (organism or "").upper()
+
+        if "ACINETOBACTER" in org_upper:
+            nodes = [
+                {"id": "lin_st2", "name": "ST2 (Global Clone 2)", "stage": 0, "color": "#f97316"},
+                {"id": "lin_st10", "name": "ST10 (Community Clade)", "stage": 0, "color": "#10b981"},
+                {"id": "lin_st25", "name": "ST25 (MDR Clade)", "stage": 0, "color": "#38bdf8"},
+                {"id": "arg_oxa23", "name": "blaOXA-23", "stage": 1, "color": "#e11d48"},
+                {"id": "arg_ndm1", "name": "blaNDM-1", "stage": 1, "color": "#e11d48"},
+                {"id": "arg_arma", "name": "armA", "stage": 1, "color": "#0ea5e9"},
+                {"id": "arg_adeb", "name": "adeB", "stage": 1, "color": "#818cf8"},
+                {"id": "arg_oxa51", "name": "blaOXA-51-like", "stage": 1, "color": "#64748b"},
+                {"id": "mob_mobile", "name": "Mobile (p1AB5075 / Plasmids)", "stage": 2, "color": "#e11d48"},
+                {"id": "mob_transposon", "name": "Transposon (Tn2006 / ISAba1)", "stage": 2, "color": "#f59e0b"},
+                {"id": "mob_immobile", "name": "Immobile (Chromosomal Core)", "stage": 2, "color": "#3b82f6"}
+            ]
+            links = [
+                {"source": "lin_st2", "target": "arg_oxa23", "value": 34},
+                {"source": "lin_st2", "target": "arg_arma", "value": 26},
+                {"source": "lin_st2", "target": "arg_adeb", "value": 20},
+                {"source": "lin_st2", "target": "arg_oxa51", "value": 34},
+                {"source": "lin_st10", "target": "arg_ndm1", "value": 18},
+                {"source": "lin_st10", "target": "arg_oxa51", "value": 18},
+                {"source": "lin_st25", "target": "arg_oxa23", "value": 16},
+                {"source": "arg_oxa23", "target": "mob_mobile", "value": 25},
+                {"source": "arg_oxa23", "target": "mob_transposon", "value": 25},
+                {"source": "arg_ndm1", "target": "mob_mobile", "value": 18},
+                {"source": "arg_arma", "target": "mob_mobile", "value": 26},
+                {"source": "arg_adeb", "target": "mob_immobile", "value": 20},
+                {"source": "arg_oxa51", "target": "mob_immobile", "value": 52}
+            ]
+            return {"title": "Acinetobacter baumannii ARG Mobilization Alluvial Flow", "nodes": nodes, "links": links}
+
+        elif "STAPHYLOCOCCUS" in org_upper:
+            nodes = [
+                {"id": "lin_st8", "name": "ST8 (USA300 MRSA)", "stage": 0, "color": "#f97316"},
+                {"id": "lin_st5", "name": "ST5 (Mu50 VISA)", "stage": 0, "color": "#10b981"},
+                {"id": "lin_st239", "name": "ST239 (Hospital Clade)", "stage": 0, "color": "#38bdf8"},
+                {"id": "arg_meca", "name": "mecA (PBP2a)", "stage": 1, "color": "#e11d48"},
+                {"id": "arg_blaz", "name": "blaZ", "stage": 1, "color": "#fb7185"},
+                {"id": "arg_pvl", "name": "lukS/F-PV (PVL)", "stage": 1, "color": "#a855f7"},
+                {"id": "arg_erma", "name": "erm(A)", "stage": 1, "color": "#38bdf8"},
+                {"id": "mob_sccmec", "name": "SCCmec Mobile Element", "stage": 2, "color": "#e11d48"},
+                {"id": "mob_prophage", "name": "Prophage (phiSLT)", "stage": 2, "color": "#f59e0b"},
+                {"id": "mob_plasmid", "name": "Plasmid (pUSA01)", "stage": 2, "color": "#3b82f6"}
+            ]
+            links = [
+                {"source": "lin_st8", "target": "arg_meca", "value": 30},
+                {"source": "lin_st8", "target": "arg_blaz", "value": 25},
+                {"source": "lin_st8", "target": "arg_pvl", "value": 28},
+                {"source": "lin_st5", "target": "arg_meca", "value": 22},
+                {"source": "lin_st239", "target": "arg_meca", "value": 18},
+                {"source": "lin_st239", "target": "arg_erma", "value": 15},
+                {"source": "arg_meca", "target": "mob_sccmec", "value": 70},
+                {"source": "arg_blaz", "target": "mob_plasmid", "value": 25},
+                {"source": "arg_pvl", "target": "mob_prophage", "value": 28},
+                {"source": "arg_erma", "target": "mob_plasmid", "value": 15}
+            ]
+            return {"title": "Staphylococcus aureus Resistome & Virulence Mobilization", "nodes": nodes, "links": links}
+
+        elif "MYCOBACTERIUM" in org_upper:
+            nodes = [
+                {"id": "lin_l2", "name": "Lineage 2 (Beijing MDR)", "stage": 0, "color": "#e11d48"},
+                {"id": "lin_l4", "name": "Lineage 4 (Euro-American)", "stage": 0, "color": "#3b82f6"},
+                {"id": "arg_rpob", "name": "rpoB (Rifampin)", "stage": 1, "color": "#e11d48"},
+                {"id": "arg_katg", "name": "katG (Isoniazid)", "stage": 1, "color": "#f59e0b"},
+                {"id": "arg_gyra", "name": "gyrA (Fluoroquinolone)", "stage": 1, "color": "#818cf8"},
+                {"id": "arg_rrs", "name": "rrs (Amikacin)", "stage": 1, "color": "#10b981"},
+                {"id": "mob_chrom", "name": "Chromosomal Point Mutation (Zero Plasmids)", "stage": 2, "color": "#3b82f6"}
+            ]
+            links = [
+                {"source": "lin_l2", "target": "arg_rpob", "value": 32},
+                {"source": "lin_l2", "target": "arg_katg", "value": 30},
+                {"source": "lin_l2", "target": "arg_gyra", "value": 24},
+                {"source": "lin_l2", "target": "arg_rrs", "value": 20},
+                {"source": "lin_l4", "target": "arg_rpob", "value": 15},
+                {"source": "lin_l4", "target": "arg_katg", "value": 18},
+                {"source": "arg_rpob", "target": "mob_chrom", "value": 47},
+                {"source": "arg_katg", "target": "mob_chrom", "value": 48},
+                {"source": "arg_gyra", "target": "mob_chrom", "value": 24},
+                {"source": "arg_rrs", "target": "mob_chrom", "value": 20}
+            ]
+            return {"title": "Mycobacterium tuberculosis Chromosomal Target Mutations", "nodes": nodes, "links": links}
+
         nodes = [
             # Lineages (0-5)
             {"id": "lin_st11", "name": "ST11 (Asian CRKP)", "stage": 0, "color": "#f97316"},
@@ -139,11 +229,104 @@ class PlasmidService:
         }
 
     @staticmethod
-    def get_chromosome_vs_plasmid_heatmaps() -> Dict[str, Any]:
+    def get_chromosome_vs_plasmid_heatmaps(organism: Optional[str] = None) -> Dict[str, Any]:
         """
         Side-by-side Dual Heatmap (Chromosome vs. Plasmid Partitioned Resistome)
         displaying ARG copy numbers, drug classes, and resistance mechanisms across clinical isolates.
         """
+        org_upper = (organism or "").upper()
+
+        if "ACINETOBACTER" in org_upper:
+            isolate_accessions = [
+                "AB5075-UW (ST2)", "MDR-TJ (ST2)", "AB-2104 (ST2)", "AB-CHINA (ST2)",
+                "AB-1001 (ST10)", "AB-1008 (ST10)", "AB-2501 (ST25)", "AB-7901 (ST79)"
+            ]
+            chrom_genes = [
+                {"name": "blaOXA-51-like", "drug_class": "Beta-lactam", "mechanism": "Inactivation", "class_color": "#e11d48"},
+                {"name": "adeB", "drug_class": "MDR", "mechanism": "Efflux", "class_color": "#3b82f6"},
+                {"name": "adeA", "drug_class": "MDR", "mechanism": "Efflux", "class_color": "#3b82f6"},
+                {"name": "GyrA_S83L", "drug_class": "Fluoroquinolone", "mechanism": "Target Alteration", "class_color": "#0ea5e9"},
+            ]
+            chrom_matrix = [
+                [1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 0, 1, 1, 0]
+            ]
+            plasmid_genes = [
+                {"name": "blaOXA-23", "drug_class": "Carbapenem", "mechanism": "Inactivation", "class_color": "#e11d48"},
+                {"name": "blaNDM-1", "drug_class": "Carbapenem", "mechanism": "Inactivation", "class_color": "#e11d48"},
+                {"name": "armA", "drug_class": "Aminoglycoside", "mechanism": "Target Protection", "class_color": "#0ea5e9"},
+                {"name": "sul1", "drug_class": "Sulfonamide", "mechanism": "Target Replacement", "class_color": "#fb923c"}
+            ]
+            plasmid_matrix = [
+                [2, 2, 2, 2, 0, 0, 2, 1],
+                [0, 2, 0, 0, 2, 0, 0, 0],
+                [1, 1, 2, 1, 0, 0, 0, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1]
+            ]
+            return {
+                "title": "Acinetobacter baumannii Partitioned Resistome (Chromosome vs. Plasmid)",
+                "isolates": isolate_accessions,
+                "chromosomal": {"genes": chrom_genes, "matrix": chrom_matrix},
+                "plasmid": {"genes": plasmid_genes, "matrix": plasmid_matrix}
+            }
+
+        elif "STAPHYLOCOCCUS" in org_upper:
+            isolate_accessions = [
+                "USA300 (ST8)", "USA300-SF (ST8)", "USA300-HOU (ST8)", "Mu50 (ST5)",
+                "N315 (ST5)", "ST239-B1", "ST239-B2", "ST398-Pig"
+            ]
+            chrom_genes = [
+                {"name": "mecA (SCCmec)", "drug_class": "Beta-lactam", "mechanism": "Target Alteration", "class_color": "#e11d48"},
+                {"name": "norA", "drug_class": "Fluoroquinolone", "mechanism": "Efflux", "class_color": "#0ea5e9"},
+                {"name": "gyrA_S84L", "drug_class": "Fluoroquinolone", "mechanism": "Target Alteration", "class_color": "#0ea5e9"},
+                {"name": "graS_mut", "drug_class": "Glycopeptide", "mechanism": "Cell Wall Thickening", "class_color": "#ec4899"}
+            ]
+            chrom_matrix = [
+                [1, 1, 1, 1, 1, 1, 1, 0],
+                [1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 0],
+                [0, 0, 0, 1, 0, 0, 0, 0]
+            ]
+            plasmid_genes = [
+                {"name": "blaZ", "drug_class": "Beta-lactam", "mechanism": "Inactivation", "class_color": "#fb7185"},
+                {"name": "erm(A)", "drug_class": "Macrolide", "mechanism": "Target Alteration", "class_color": "#38bdf8"},
+                {"name": "tet(M)", "drug_class": "Tetracycline", "mechanism": "Target Protection", "class_color": "#fdba74"}
+            ]
+            plasmid_matrix = [
+                [1, 1, 1, 1, 1, 1, 1, 0],
+                [0, 0, 0, 1, 1, 1, 1, 0],
+                [0, 0, 0, 0, 0, 1, 1, 1]
+            ]
+            return {
+                "title": "Staphylococcus aureus Resistome (Chromosomal SCCmec vs. Plasmid)",
+                "isolates": isolate_accessions,
+                "chromosomal": {"genes": chrom_genes, "matrix": chrom_matrix},
+                "plasmid": {"genes": plasmid_genes, "matrix": plasmid_matrix}
+            }
+
+        elif "MYCOBACTERIUM" in org_upper:
+            isolate_accessions = ["XDR-Beijing-1", "XDR-Beijing-2", "MDR-Euro-1", "H37Rv-Ref"]
+            chrom_genes = [
+                {"name": "rpoB_S450L", "drug_class": "Rifamycin", "mechanism": "Target Alteration", "class_color": "#e11d48"},
+                {"name": "katG_S315T", "drug_class": "Isoniazid", "mechanism": "Prodrug Activation Loss", "class_color": "#f59e0b"},
+                {"name": "gyrA_D94G", "drug_class": "Fluoroquinolone", "mechanism": "Target Alteration", "class_color": "#818cf8"},
+                {"name": "rrs_A1401G", "drug_class": "Aminoglycoside", "mechanism": "Target Alteration", "class_color": "#10b981"}
+            ]
+            chrom_matrix = [
+                [1, 1, 1, 0],
+                [1, 1, 1, 0],
+                [1, 1, 0, 0],
+                [1, 1, 0, 0]
+            ]
+            return {
+                "title": "Mycobacterium tuberculosis (Strictly Chromosomal Point Mutation Resistome)",
+                "isolates": isolate_accessions,
+                "chromosomal": {"genes": chrom_genes, "matrix": chrom_matrix},
+                "plasmid": {"genes": [], "matrix": []}
+            }
+
         isolate_accessions = [
             "HS11286 (ST11)", "SH-KP-02 (ST11)", "HZ-KP-09 (ST11)", "BJ-KP-14 (ST11)",
             "VAD-01 (ST147)", "VAD-04 (ST147)", "DEL-11 (ST147)", "MUM-08 (ST147)",

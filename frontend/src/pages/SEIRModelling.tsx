@@ -3,22 +3,93 @@ import { api } from '../services/api';
 import { SEIRSimulationResult } from '../types';
 import { TrendingUp, Sliders, Info, Play, RotateCcw } from 'lucide-react';
 
-export const SEIRModelling: React.FC = () => {
+interface SEIRModellingProps {
+  selectedOrganism?: string;
+}
+
+const ORGANISM_SEIR_PRESETS: Record<string, any> = {
+  'Klebsiella pneumoniae': {
+    beta_transmission: 0.28,
+    theta_carrier_infectivity: 0.35,
+    alpha_progression: 0.08,
+    gamma_colonized_clearance: 0.03,
+    gamma_infection_clearance: 0.10,
+    r0_text: 'R0 ~ 2.4 (Nosocomial ICU transmission)'
+  },
+  'Acinetobacter baumannii': {
+    beta_transmission: 0.38,
+    theta_carrier_infectivity: 0.40,
+    alpha_progression: 0.12,
+    gamma_colonized_clearance: 0.02,
+    gamma_infection_clearance: 0.08,
+    r0_text: 'R0 ~ 3.1 (High environmental persistence & ventilator colonization)'
+  },
+  'Pseudomonas aeruginosa': {
+    beta_transmission: 0.24,
+    theta_carrier_infectivity: 0.30,
+    alpha_progression: 0.09,
+    gamma_colonized_clearance: 0.04,
+    gamma_infection_clearance: 0.11,
+    r0_text: 'R0 ~ 1.9 (Waterborne and biofilm hospital reservoirs)'
+  },
+  'Staphylococcus aureus': {
+    beta_transmission: 0.34,
+    theta_carrier_infectivity: 0.50,
+    alpha_progression: 0.14,
+    gamma_colonized_clearance: 0.05,
+    gamma_infection_clearance: 0.12,
+    r0_text: 'R0 ~ 2.8 (Cutaneous contact and anterior nares colonization)'
+  },
+  'Enterococcus faecium': {
+    beta_transmission: 0.22,
+    theta_carrier_infectivity: 0.45,
+    alpha_progression: 0.06,
+    gamma_colonized_clearance: 0.015,
+    gamma_infection_clearance: 0.09,
+    r0_text: 'R0 ~ 2.1 (Prolonged asymptomatic gastrointestinal carriage)'
+  },
+  'Mycobacterium tuberculosis': {
+    beta_transmission: 0.16,
+    theta_carrier_infectivity: 0.20,
+    alpha_progression: 0.03,
+    gamma_colonized_clearance: 0.005,
+    gamma_infection_clearance: 0.04,
+    r0_text: 'R0 ~ 1.6 (Airborne droplet nuclei & long-term latent progression)'
+  }
+};
+
+export const SEIRModelling: React.FC<SEIRModellingProps> = ({
+  selectedOrganism = 'Klebsiella pneumoniae'
+}) => {
+  const preset = ORGANISM_SEIR_PRESETS[selectedOrganism] || ORGANISM_SEIR_PRESETS['Klebsiella pneumoniae'];
+
   const [params, setParams] = useState({
     total_population: 1000.0,
     initial_susceptible: 990.0,
     initial_colonized: 8.0,
     initial_infected: 2.0,
     initial_recovered: 0.0,
-    beta_transmission: 0.28,
-    theta_carrier_infectivity: 0.35,
-    alpha_progression: 0.08,
-    gamma_colonized_clearance: 0.03,
-    gamma_infection_clearance: 0.10,
+    beta_transmission: preset.beta_transmission,
+    theta_carrier_infectivity: preset.theta_carrier_infectivity,
+    alpha_progression: preset.alpha_progression,
+    gamma_colonized_clearance: preset.gamma_colonized_clearance,
+    gamma_infection_clearance: preset.gamma_infection_clearance,
     delta_treatment_exposure: 0.05,
     simulation_days: 120,
     time_step: 0.5,
   });
+
+  useEffect(() => {
+    const p = ORGANISM_SEIR_PRESETS[selectedOrganism] || ORGANISM_SEIR_PRESETS['Klebsiella pneumoniae'];
+    setParams((prev) => ({
+      ...prev,
+      beta_transmission: p.beta_transmission,
+      theta_carrier_infectivity: p.theta_carrier_infectivity,
+      alpha_progression: p.alpha_progression,
+      gamma_colonized_clearance: p.gamma_colonized_clearance,
+      gamma_infection_clearance: p.gamma_infection_clearance,
+    }));
+  }, [selectedOrganism]);
 
   const [simResult, setSimResult] = useState<SEIRSimulationResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -60,11 +131,17 @@ export const SEIRModelling: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <div>
-          <h1 className="text-xl font-bold text-white tracking-wide">Hospital Transmission & Colonization Dynamics</h1>
+          <div className="flex items-center space-x-2">
+            <h1 className="text-xl font-bold text-white tracking-wide">Hospital Transmission & Colonization Dynamics</h1>
+            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-950 text-emerald-300 border border-emerald-800 italic">
+              {selectedOrganism}
+            </span>
+          </div>
           <p className="text-xs text-slate-400">
-            Deterministic Runge-Kutta numerical differential equation solver for bacterial colonization (C) and infection (I)
+            Deterministic Runge-Kutta differential equation solver • <span className="text-cyan-400 font-mono">{preset.r0_text}</span>
           </p>
         </div>
+
 
         <button
           onClick={() =>

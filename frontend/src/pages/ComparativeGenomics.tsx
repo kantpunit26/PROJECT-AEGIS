@@ -20,7 +20,13 @@ import { PanGenomeTreeMatrix } from '../components/trees/PanGenomeTreeMatrix';
 import { LinearSyntenyViewer } from '../components/genomes/LinearSyntenyViewer';
 import { FolderGit2, GitBranch, Sliders, Dna, Network, Clock, Layers, TrendingUp } from 'lucide-react';
 
-export const ComparativeGenomics: React.FC = () => {
+interface ComparativeGenomicsProps {
+  selectedOrganism?: string;
+}
+
+export const ComparativeGenomics: React.FC<ComparativeGenomicsProps> = ({
+  selectedOrganism = 'Klebsiella pneumoniae'
+}) => {
   const [snpData, setSnpData] = useState<SNPMatrixData | null>(null);
   const [treeData, setTreeData] = useState<PhylogeneticTreeData | null>(null);
   const [circularAtlas, setCircularAtlas] = useState<CircularAtlasData | null>(null);
@@ -44,14 +50,14 @@ export const ComparativeGenomics: React.FC = () => {
     async function loadComparative() {
       try {
         const [snp, tree, atlas, mst, timeTree, skyline, panMat, synteny] = await Promise.all([
-          api.getSNPMatrix('HS11286'),
-          api.getPhylogeneticTree('Klebsiella pneumoniae'),
-          api.getCircularAtlas(),
-          api.getMinimumSpanningTree(),
-          api.getTimeScaledTree(),
-          api.getBayesianSkyline(),
-          api.getPanGenomeMatrix(),
-          api.getLinearSynteny(),
+          api.getSNPMatrix('HS11286', selectedOrganism),
+          api.getPhylogeneticTree(selectedOrganism),
+          api.getCircularAtlas(selectedOrganism),
+          api.getMinimumSpanningTree(selectedOrganism),
+          api.getTimeScaledTree(selectedOrganism),
+          api.getBayesianSkyline(selectedOrganism),
+          api.getPanGenomeMatrix(selectedOrganism),
+          api.getLinearSynteny(selectedOrganism),
         ]);
         setSnpData(snp);
         setTreeData(tree);
@@ -66,7 +72,7 @@ export const ComparativeGenomics: React.FC = () => {
       }
     }
     loadComparative();
-  }, []);
+  }, [selectedOrganism]);
 
   const handleSubTabChange = (tab: SubTab) => {
     setActiveSubTab(tab);
@@ -80,11 +86,17 @@ export const ComparativeGenomics: React.FC = () => {
       {/* Title & Navigation */}
       <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-3">
         <div>
-          <h1 className="text-lg sm:text-xl font-bold text-white tracking-wide">Comparative Genomics & Phylogenetics</h1>
+          <div className="flex items-center space-x-2">
+            <h1 className="text-lg sm:text-xl font-bold text-white tracking-wide">Comparative Genomics & Phylogenetics</h1>
+            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-950 text-emerald-300 border border-emerald-800 italic">
+              {selectedOrganism}
+            </span>
+          </div>
           <p className="text-xs text-slate-400 mt-0.5">
             Core-genome alignment, transmission networks, Bayesian molecular clocks, pan-genome matrices, and circular chromosome atlases
           </p>
         </div>
+
 
         {/* 6 Sub-Tab Navigation Bar */}
         <div className="flex bg-slate-900 border border-slate-800 p-1 rounded-lg text-xs font-mono overflow-x-auto w-full xl:w-auto scrollbar-none shrink-0 gap-1">

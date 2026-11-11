@@ -3,37 +3,44 @@ import { api } from '../services/api';
 import { SurveillanceAlert } from '../types';
 import { FileSpreadsheet, Download, Bell, ShieldAlert, CheckCircle, Radio } from 'lucide-react';
 
-export const Reports: React.FC = () => {
+interface ReportsProps {
+  selectedOrganism?: string;
+}
+
+export const Reports: React.FC<ReportsProps> = ({
+  selectedOrganism = 'Klebsiella pneumoniae'
+}) => {
   const [alerts, setAlerts] = useState<SurveillanceAlert[]>([]);
   const [downloading, setDownloading] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadAlerts() {
       try {
-        const data = await api.getAlerts();
+        const data = await api.getAlerts(selectedOrganism);
         setAlerts(data);
       } catch (err) {
         console.error('Failed to load alerts:', err);
       }
     }
     loadAlerts();
-  }, []);
+  }, [selectedOrganism]);
 
   const handleDownload = async (format: 'csv' | 'geojson' | 'who-glass' | 'newick') => {
     setDownloading(format);
+    const orgQuery = `?organism=${encodeURIComponent(selectedOrganism)}`;
     try {
       if (format === 'csv') {
-        window.open('/api/v1/reports/export/csv', '_blank');
+        window.open(`/api/v1/reports/export/csv${orgQuery}`, '_blank');
       } else if (format === 'newick') {
         window.open('/api/v1/reports/export/newick', '_blank');
       } else if (format === 'geojson') {
-        const res = await fetch('/api/v1/reports/export/geojson');
+        const res = await fetch(`/api/v1/reports/export/geojson${orgQuery}`);
         const data = await res.json();
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/geo+json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'aegis_surveillance.geojson';
+        a.download = `aegis_${selectedOrganism.toLowerCase().replace(/[^a-z0-9]/g, '_')}_surveillance.geojson`;
         a.click();
       } else if (format === 'who-glass') {
         const res = await fetch('/api/v1/reports/export/who-glass');
@@ -56,9 +63,14 @@ export const Reports: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <div>
-          <h1 className="text-xl font-bold text-white tracking-wide">Surveillance Alerts & Export Center</h1>
+          <div className="flex items-center space-x-2">
+            <h1 className="text-xl font-bold text-white tracking-wide">Surveillance Alerts & Export Center</h1>
+            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-950 text-emerald-300 border border-emerald-800 italic">
+              {selectedOrganism}
+            </span>
+          </div>
           <p className="text-xs text-slate-400">
-            Real-time threshold alert notifications and standardized scientific data exports (WHO GLASS, GeoJSON, CSV, Newick)
+            Generate and export WHO GLASS standardized epidemiological reports, core phylogenies, and spatial GeoJSON datasets
           </p>
         </div>
       </div>

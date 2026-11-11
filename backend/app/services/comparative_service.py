@@ -11,12 +11,37 @@ class ComparativeGenomicsService:
     def get_or_create_snp_matrix(
         db: Session,
         isolate_ids: Optional[List[str]] = None,
-        reference_genome: str = "HS11286"
+        reference_genome: str = "HS11286",
+        organism: str = "Klebsiella pneumoniae"
     ) -> Dict[str, Any]:
         """
         Retrieves existing core SNP analysis or computes a filtered pairwise SNP distance matrix
         across selected isolates.
         """
+        if organism and "KLEBSIELLA" not in organism.upper():
+            isolates = db.query(Isolate).filter(Isolate.organism.ilike(f"%{organism}%")).all()
+            if not isolates:
+                isolates = db.query(Isolate).all()[:6]
+            accessions = [i.accession for i in isolates]
+            n = len(accessions)
+            matrix = [[0 for _ in range(n)] for _ in range(n)]
+            for i in range(n):
+                for j in range(i + 1, n):
+                    dist = 6 if isolates[i].city == isolates[j].city else 320
+                    matrix[i][j] = dist
+                    matrix[j][i] = dist
+            return {
+                "id": f"snp_{organism.lower().replace(' ', '_')}",
+                "analysis_name": f"{organism} Core SNP Distance Matrix",
+                "reference_genome": accessions[0] if accessions else "Ref",
+                "isolate_count": n,
+                "accessions": accessions,
+                "distance_matrix": matrix,
+                "total_core_positions": isolates[0].genome_size if isolates else 4000000,
+                "filtered_snp_count": 1280,
+                "created_at": "2026-11-11T14:00:00Z"
+            }
+
         existing = db.query(SNPAnalysis).filter(SNPAnalysis.reference_genome.contains(reference_genome)).first()
         if existing and (not isolate_ids or len(isolate_ids) == existing.isolate_count):
             return {
@@ -30,6 +55,7 @@ class ComparativeGenomicsService:
                 "filtered_snp_count": existing.filtered_snp_count,
                 "created_at": existing.created_at
             }
+
 
         # If custom subset requested, build from isolates
         isolates = db.query(Isolate).all() if not isolate_ids else db.query(Isolate).filter(Isolate.id.in_(isolate_ids)).all()
@@ -98,70 +124,126 @@ class ComparativeGenomicsService:
         return coordinates
 
     @staticmethod
-    def get_circular_genome_atlas(genome_size: int = 5333942, bins: int = 120) -> Dict[str, Any]:
+    def get_circular_genome_atlas(
+        genome_size: int = 5333942,
+        bins: int = 120,
+        organism: str = "Klebsiella pneumoniae"
+    ) -> Dict[str, Any]:
         """
-        Generates comprehensive multi-track circular genome atlas data for K. pneumoniae
-        (Reference HS11286 / ST11 CRKP), including contigs, CDS (+/-), AMR determinants,
-        virulence factor clusters, mobile genetic elements, prophage islands, comparative
-        BLAST clade identity rings, GC content, and GC skew waveform.
+        Generates comprehensive multi-track circular genome atlas data for the target organism,
+        including contigs, CDS (+/-), AMR determinants, virulence factor clusters, mobile genetic
+        elements, comparative BLAST clade identity rings, GC content, and GC skew waveform.
         """
+        org_upper = organism.upper()
+
+        if "ACINETOBACTER" in org_upper:
+            genome_size = 4004944
+            organism_name = "Acinetobacter baumannii"
+            strain_name = "AB5075-UW / ST2 (Carbapenem-Resistant CRAB)"
+            gc_mean = 39.1
+            amr_hotspots = {
+                18: {"name": "blaOXA-23 (Tn2006)", "mechanism": "Inactivation", "drug_class": "Carbapenem", "type": "Carbapenemase"},
+                38: {"name": "blaOXA-51-like", "mechanism": "Inactivation", "drug_class": "Beta-lactam", "type": "Intrinsic Carbapenemase"},
+                65: {"name": "armA (16S RMT)", "mechanism": "Target Protection", "drug_class": "Aminoglycoside", "type": "Pan-Aminoglycoside"},
+                92: {"name": "adeB", "mechanism": "Efflux", "drug_class": "Multidrug", "type": "RND Efflux Pump"},
+            }
+            virulence_hotspots = {
+                24: {"name": "csuA/BABCDE", "function": "Biofilm Adhesion", "locus": "Chaperone-Usher Pili"},
+                55: {"name": "bauA", "function": "Iron Acquisition", "locus": "Acinetobactin Receptor"},
+                80: {"name": "bap", "function": "Intercellular Adhesion", "locus": "Biofilm Protein"},
+                105: {"name": "capsule KL2", "function": "Immune Evasion", "locus": "Capsular Polysaccharide"}
+            }
+            mge_hotspots = {
+                17: {"name": "ISAba1 / Tn2006", "type": "Insertion Sequence"},
+                64: {"name": "AbaR4 Resistance Island", "type": "Genomic Island"},
+                90: {"name": "p1AB5075 Replicon", "type": "Conjugative Plasmid"}
+            }
+        elif "STAPHYLOCOCCUS" in org_upper:
+            genome_size = 2872915
+            organism_name = "Staphylococcus aureus"
+            strain_name = "USA300_FPR3757 / ST8 (Community MRSA)"
+            gc_mean = 32.8
+            amr_hotspots = {
+                18: {"name": "mecA (PBP2a)", "mechanism": "Target Alteration", "drug_class": "Beta-lactam", "type": "Methicillin Resistance"},
+                36: {"name": "blaZ", "mechanism": "Inactivation", "drug_class": "Beta-lactam", "type": "Penicillinase"},
+                68: {"name": "erm(A)", "mechanism": "Target Alteration", "drug_class": "Macrolide", "type": "23S rRNA Methylase"},
+                95: {"name": "tet(M)", "mechanism": "Target Protection", "drug_class": "Tetracycline", "type": "Ribosomal Protection"}
+            }
+            virulence_hotspots = {
+                25: {"name": "lukS/F-PV", "function": "Cytotoxin", "locus": "Panton-Valentine Leukocidin (PVL)"},
+                50: {"name": "hla / hlb", "function": "Pore-forming Toxin", "locus": "Alpha-Hemolysin"},
+                75: {"name": "agrABCD (Type I)", "function": "Quorum Sensing", "locus": "Accessory Gene Regulator"},
+                100: {"name": "cap8A-P", "function": "Capsule", "locus": "Serotype 8 Capsule"}
+            }
+            mge_hotspots = {
+                17: {"name": "SCCmec Type IVa", "type": "Staphylococcal Cassette"},
+                24: {"name": "Phi-SLT Prophage", "type": "Bacteriophage"},
+                35: {"name": "pUSA01 Plasmid", "type": "Small Resistance Plasmid"}
+            }
+        elif "MYCOBACTERIUM" in org_upper:
+            genome_size = 4411532
+            organism_name = "Mycobacterium tuberculosis"
+            strain_name = "XDR-Beijing Lineage 2"
+            gc_mean = 65.6
+            amr_hotspots = {
+                22: {"name": "rpoB_S450L", "mechanism": "Target Alteration", "drug_class": "Rifamycin", "type": "Rifampin Resistance (RRDR)"},
+                45: {"name": "katG_S315T", "mechanism": "Activation Failure", "drug_class": "Isonicotinic Acid", "type": "Isoniazid Resistance"},
+                72: {"name": "gyrA_D94G", "mechanism": "Target Alteration", "drug_class": "Fluoroquinolone", "type": "QRDR Mutation"},
+                95: {"name": "rrs_A1401G", "mechanism": "Target Alteration", "drug_class": "Aminoglycoside", "type": "Amikacin/Kanamycin"}
+            }
+            virulence_hotspots = {
+                30: {"name": "esx-1 (ESAT-6 / CFP-10)", "function": "Host Macrophage Lysis", "locus": "Type VII Secretion"},
+                60: {"name": "mce1ABCD", "function": "Invasion & Persistence", "locus": "Mammalian Cell Entry"},
+                85: {"name": "pks15/1", "function": "Immunomodulation", "locus": "Phenolic Glycolipid"}
+            }
+            mge_hotspots = {
+                28: {"name": "IS6110 Element", "type": "Insertion Sequence"},
+                62: {"name": "RD1 Region", "type": "Region of Difference"},
+                90: {"name": "IS1081 Element", "type": "Insertion Sequence"}
+            }
+        else:
+            organism_name = "Klebsiella pneumoniae subsp. pneumoniae"
+            strain_name = "HS11286 / ST11 (Carbapenem-Resistant / Hypervirulent)"
+            gc_mean = 57.3
+            amr_hotspots = {
+                14: {"name": "blaSHV-12", "mechanism": "Inactivation", "drug_class": "Beta-lactam", "type": "ESBL"},
+                28: {"name": "Tn4401::blaKPC-2", "mechanism": "Inactivation", "drug_class": "Carbapenem", "type": "Carbapenemase"},
+                46: {"name": "blaCTX-M-65", "mechanism": "Inactivation", "drug_class": "Cephalosporin", "type": "ESBL"},
+                48: {"name": "rmtB", "mechanism": "Target Protection", "drug_class": "Aminoglycoside", "type": "16S rRNA methyltransferase"},
+                62: {"name": "blaNDM-5 / IncX3", "mechanism": "Inactivation", "drug_class": "Carbapenem", "type": "Metallo-beta-lactamase"},
+                74: {"name": "oqxAB", "mechanism": "Efflux", "drug_class": "Fluoroquinolone", "type": "RND Efflux Pump"},
+                78: {"name": "mgrB::IS5 disruption", "mechanism": "Target Alteration", "drug_class": "Polymyxin", "type": "Colistin Resistance"},
+                85: {"name": "GyrA_S83I / ParC_S80I", "mechanism": "Target Alteration", "drug_class": "Fluoroquinolone", "type": "QRDR Mutation"},
+                98: {"name": "fosA", "mechanism": "Inactivation", "drug_class": "Fosfomycin", "type": "Intrinsic Glutathione S-transferase"},
+                106: {"name": "armA", "mechanism": "Target Protection", "drug_class": "Aminoglycoside", "type": "Pan-aminoglycoside Resistance"},
+            }
+            virulence_hotspots = {
+                20: {"name": "mrkABCDF", "function": "Biofilm Adhesion", "locus": "Type 3 Fimbriae"},
+                35: {"name": "ybtAEPSTUX", "function": "Iron Acquisition", "locus": "Yersiniabactin (ICEKp1)"},
+                55: {"name": "iucABCD-iutA", "function": "High-Affinity Siderophore", "locus": "Aerobactin (pLVPK-like)"},
+                57: {"name": "rmpA / rmpA2", "function": "Hypermucoviscosity", "locus": "Capsule Overexpression Regulator"},
+                88: {"name": "clbA-R", "function": "Genotoxin", "locus": "Colibactin Island"},
+                112: {"name": "cps / wzi / K-locus (KL64)", "function": "Immune Evasion", "locus": "Capsular Polysaccharide"},
+            }
+            mge_hotspots = {
+                27: {"name": "Tn4401 Transposon", "type": "Transposon"},
+                36: {"name": "ICEKp1 Island", "type": "Integrative Conjugative Element"},
+                45: {"name": "ISEcp1 Insertion Element", "type": "IS Element"},
+                61: {"name": "IncX3 Plasmid Backbone", "type": "Conjugative Vehicle"},
+                77: {"name": "IS5-like (ISKpn26)", "type": "Insertion Sequence"},
+                92: {"name": "Class 1 Integron (IntI1)", "type": "Integron"},
+                102: {"name": "Phi-KP1 Prophage Scar", "type": "Prophage"},
+            }
+
         step = genome_size / bins
         bins_data = []
 
-        # Key specific genomic hotspot loci for K. pneumoniae
-        amr_hotspots = {
-            14: {"name": "blaSHV-12", "mechanism": "Inactivation", "drug_class": "Beta-lactam", "type": "ESBL"},
-            28: {"name": "Tn4401::blaKPC-2", "mechanism": "Inactivation", "drug_class": "Carbapenem", "type": "Carbapenemase"},
-            46: {"name": "blaCTX-M-65", "mechanism": "Inactivation", "drug_class": "Cephalosporin", "type": "ESBL"},
-            48: {"name": "rmtB", "mechanism": "Target Protection", "drug_class": "Aminoglycoside", "type": "16S rRNA methyltransferase"},
-            62: {"name": "blaNDM-5 / IncX3", "mechanism": "Inactivation", "drug_class": "Carbapenem", "type": "Metallo-beta-lactamase"},
-            74: {"name": "oqxAB", "mechanism": "Efflux", "drug_class": "Fluoroquinolone", "type": "RND Efflux Pump"},
-            78: {"name": "mgrB::IS5 disruption", "mechanism": "Target Alteration", "drug_class": "Polymyxin", "type": "Colistin Resistance"},
-            85: {"name": "GyrA_S83I / ParC_S80I", "mechanism": "Target Alteration", "drug_class": "Fluoroquinolone", "type": "QRDR Mutation"},
-            98: {"name": "fosA", "mechanism": "Inactivation", "drug_class": "Fosfomycin", "type": "Intrinsic Glutathione S-transferase"},
-            106: {"name": "armA", "mechanism": "Target Protection", "drug_class": "Aminoglycoside", "type": "Pan-aminoglycoside Resistance"},
-        }
-
-        virulence_hotspots = {
-            20: {"name": "mrkABCDF", "function": "Biofilm Adhesion", "locus": "Type 3 Fimbriae"},
-            35: {"name": "ybtAEPSTUX", "function": "Iron Acquisition", "locus": "Yersiniabactin (ICEKp1)"},
-            55: {"name": "iucABCD-iutA", "function": "High-Affinity Siderophore", "locus": "Aerobactin (pLVPK-like)"},
-            57: {"name": "rmpA / rmpA2", "function": "Hypermucoviscosity", "locus": "Capsule Overexpression Regulator"},
-            88: {"name": "clbA-R", "function": "Genotoxin", "locus": "Colibactin Island"},
-            112: {"name": "cps / wzi / K-locus (KL64)", "function": "Immune Evasion", "locus": "Capsular Polysaccharide"},
-        }
-
-        mge_hotspots = {
-            27: {"name": "Tn4401 Transposon", "type": "Transposon"},
-            36: {"name": "ICEKp1 Island", "type": "Integrative Conjugative Element"},
-            45: {"name": "ISEcp1 Insertion Element", "type": "IS Element"},
-            61: {"name": "IncX3 Plasmid Backbone", "type": "Conjugative Vehicle"},
-            77: {"name": "IS5-like (ISKpn26)", "type": "Insertion Sequence"},
-            92: {"name": "Class 1 Integron (IntI1)", "type": "Integron"},
-            102: {"name": "Phi-KP1 Prophage Scar", "type": "Prophage"},
-        }
-
         for i in range(bins):
             pos = int(i * step)
-            # Biological GC skew waveform
             skew = math.sin((i / bins) * 2 * math.pi) * 0.14 + (0.02 * math.sin((i / bins) * 6 * math.pi))
-            gc_content = 57.3 + math.cos((i / bins) * 4 * math.pi) * 2.1
-
-            # CDS density
+            gc_content = gc_mean + math.cos((i / bins) * 4 * math.pi) * 2.1
             cds_fwd = (i % 3 != 0)
             cds_rev = (i % 4 != 0)
-
-            # Comparative BLAST clade rings: sequence similarity %
-            # Clade 1 (ST258) has deletions at ICEKp and distinct capsule
-            clade1_blast = 99.4 if i not in (35, 36, 112) else 68.0
-            # Clade 2 (ST11) is the reference strain (HS11286)
-            clade2_blast = 100.0
-            # Clade 3 (ST147) has variation in prophages and plasmid cargo
-            clade3_blast = 98.7 if i not in (28, 102) else 82.5
-            # Clade 4 (ST15)
-            clade4_blast = 97.8 if i not in (55, 57, 88) else 74.0
-            # Clade 5 (ST307)
-            clade5_blast = 97.2 if i not in (28, 35, 112) else 70.5
 
             bins_data.append({
                 "bin_index": i,
@@ -174,66 +256,44 @@ class ComparativeGenomicsService:
                 "virulence": virulence_hotspots.get(i),
                 "mge": mge_hotspots.get(i),
                 "blast_clades": {
-                    "clade_1_st258": clade1_blast,
-                    "clade_2_st11": clade2_blast,
-                    "clade_3_st147": clade3_blast,
-                    "clade_4_st15": clade4_blast,
-                    "clade_5_st307": clade5_blast,
+                    "clade_1_st258": 99.4 if i not in (35, 36) else 72.0,
+                    "clade_2_st11": 100.0,
+                    "clade_3_st147": 98.7 if i not in (28, 102) else 80.5,
+                    "clade_4_st15": 97.8 if i not in (55, 88) else 74.0,
+                    "clade_5_st307": 97.2 if i not in (28, 35) else 70.5,
                 }
             })
 
-        hotspots_list = [
-            {
-                "id": "kpc_tn4401",
-                "label": "Tn4401b :: blaKPC-2",
-                "position_bp": 1245000,
-                "bin_index": 28,
-                "category": "AMR & MGE",
-                "description": "Dominant epidemic carbapenemase vehicle transposon carrying blaKPC-2 flanked by IRL/IRR and ISKpn6/7."
-            },
-            {
-                "id": "ndm5_incx3",
-                "label": "IncX3 :: blaNDM-5",
-                "position_bp": 2750000,
-                "bin_index": 62,
-                "category": "AMR & MGE",
-                "description": "High-mobility conjugative IncX3 plasmid harboring metallo-beta-lactamase conferring pan-beta-lactam resistance."
-            },
-            {
-                "id": "mgrb_colistin",
-                "label": "mgrB :: IS5 Inactivation",
-                "position_bp": 3480000,
-                "bin_index": 78,
-                "category": "Point Mutation",
-                "description": "Chromosomal insertion of ISKpn26 interrupting mgrB, constitutively upregulating PhoPQ and causing colistin resistance."
-            },
-            {
-                "id": "icekp1_hypervirulence",
-                "label": "ICEKp1 (ybt + rmpA2)",
-                "position_bp": 1560000,
-                "bin_index": 35,
+        hotspots_list = []
+        for idx, amr in amr_hotspots.items():
+            hotspots_list.append({
+                "id": f"hotspot_{idx}",
+                "label": amr["name"],
+                "position_bp": int(idx * step),
+                "bin_index": idx,
+                "category": "AMR & Resistance",
+                "description": f"{amr['type']} mechanism: {amr['mechanism']} ({amr['drug_class']})"
+            })
+        for idx, vir in virulence_hotspots.items():
+            hotspots_list.append({
+                "id": f"vir_{idx}",
+                "label": vir["name"],
+                "position_bp": int(idx * step),
+                "bin_index": idx,
                 "category": "Virulence Island",
-                "description": "Integrative Conjugative Element encoding yersiniabactin siderophore system and hypermucoviscosity capsule regulator."
-            },
-            {
-                "id": "capsule_kl64",
-                "label": "Capsule K-Locus (KL64)",
-                "position_bp": 4980000,
-                "bin_index": 112,
-                "category": "Capsule Antigen",
-                "description": "wzi-64 capsular polysaccharide biosynthesis gene cluster conferring antiphagocytic immune escape."
-            }
-        ]
+                "description": f"{vir['function']} ({vir['locus']})"
+            })
 
         return {
-            "organism": "Klebsiella pneumoniae subsp. pneumoniae",
-            "strain": "HS11286 / ST11 (Carbapenem-Resistant / Hypervirulent)",
+            "organism": organism_name,
+            "strain": strain_name,
             "genome_size": genome_size,
-            "gc_mean": 57.3,
+            "gc_mean": gc_mean,
             "total_bins": bins,
             "bins": bins_data,
             "hotspots": hotspots_list
         }
+
 
     @staticmethod
     def get_minimum_spanning_tree() -> Dict[str, Any]:

@@ -21,7 +21,13 @@ import {
   AlertSimulationResult
 } from '../types';
 
-export const OneHealth: React.FC = () => {
+interface OneHealthProps {
+  selectedOrganism?: string;
+}
+
+export const OneHealth: React.FC<OneHealthProps> = ({
+  selectedOrganism = 'Klebsiella pneumoniae'
+}) => {
   const [sites, setSites] = useState<WastewaterSite[]>([]);
   const [leadTimeData, setLeadTimeData] = useState<WBELeadTimeResponse | null>(null);
   const [nexusMatrix, setNexusMatrix] = useState<OneHealthMatrix | null>(null);
@@ -29,11 +35,21 @@ export const OneHealth: React.FC = () => {
 
   // Simulation State
   const [simSite, setSimSite] = useState('WWTP-METRO-01');
-  const [simPathogen, setSimPathogen] = useState('Klebsiella pneumoniae');
+  const [simPathogen, setSimPathogen] = useState(selectedOrganism);
   const [simGene, setSimGene] = useState('blaNDM-5');
   const [simLoad, setSimLoad] = useState(7.4);
   const [simResult, setSimResult] = useState<AlertSimulationResult | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
+
+  useEffect(() => {
+    setSimPathogen(selectedOrganism);
+    if (selectedOrganism.includes('Acinetobacter')) setSimGene('blaOXA-23');
+    else if (selectedOrganism.includes('Pseudomonas')) setSimGene('blaVIM-2');
+    else if (selectedOrganism.includes('Staphylococcus')) setSimGene('mecA');
+    else if (selectedOrganism.includes('Enterococcus')) setSimGene('vanA');
+    else if (selectedOrganism.includes('Mycobacterium')) setSimGene('rpoB_S450L');
+    else setSimGene('blaNDM-5');
+  }, [selectedOrganism]);
 
   useEffect(() => {
     loadData();

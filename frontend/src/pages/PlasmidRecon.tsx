@@ -5,7 +5,13 @@ import { ResistomeMobilizationSankey } from '../components/charts/ResistomeMobil
 import { ChromosomeVsPlasmidHeatmap } from '../components/charts/ChromosomeVsPlasmidHeatmap';
 import { SlidersHorizontal, Layers, Share2, ShieldAlert } from 'lucide-react';
 
-export const PlasmidRecon: React.FC = () => {
+interface PlasmidReconProps {
+  selectedOrganism?: string;
+}
+
+export const PlasmidRecon: React.FC<PlasmidReconProps> = ({
+  selectedOrganism = 'Klebsiella pneumoniae'
+}) => {
   const [summary, setSummary] = useState<any | null>(null);
   const [matrixData, setMatrixData] = useState<any | null>(null);
   const [sankeyData, setSankeyData] = useState<MobilizationSankeyData | null>(null);
@@ -14,12 +20,13 @@ export const PlasmidRecon: React.FC = () => {
 
   useEffect(() => {
     async function loadPlasmids() {
+      setLoading(true);
       try {
         const [sum, mat, sankey, heatmaps] = await Promise.all([
-          api.getPlasmidSummary(),
-          api.getPlasmidMatrix(),
-          api.getMobilizationSankey(),
-          api.getPartitionedHeatmaps(),
+          api.getPlasmidSummary(selectedOrganism),
+          api.getPlasmidMatrix(selectedOrganism),
+          api.getMobilizationSankey(selectedOrganism),
+          api.getPartitionedHeatmaps(selectedOrganism),
         ]);
         setSummary(sum);
         setMatrixData(mat);
@@ -32,13 +39,18 @@ export const PlasmidRecon: React.FC = () => {
       }
     }
     loadPlasmids();
-  }, []);
+  }, [selectedOrganism]);
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <div>
-          <h1 className="text-xl font-bold text-white tracking-wide">Plasmid Characterization & MOB-Suite</h1>
+          <div className="flex items-center space-x-2">
+            <h1 className="text-xl font-bold text-white tracking-wide">Plasmid Characterization & MOB-Suite</h1>
+            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-950 text-emerald-300 border border-emerald-800 italic">
+              {selectedOrganism}
+            </span>
+          </div>
           <p className="text-xs text-slate-400">
             Reconstructed extrachromosomal replicon incompatibility typing, resistome mobilization flows, and chromosome-vs-plasmid partitioning
           </p>

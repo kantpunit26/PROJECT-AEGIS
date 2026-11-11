@@ -1,31 +1,35 @@
+from typing import Optional
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.services.plasmid_service import plasmid_service
 from app.models.plasmid import Plasmid
+from app.models.isolate import Isolate
 
 router = APIRouter()
 
 @router.get("/summary", summary="Plasmid MOB-suite Replicon & Mobility Statistics")
-def get_plasmid_summary(db: Session = Depends(get_db)):
-    return plasmid_service.get_plasmid_summary(db)
+def get_plasmid_summary(organism: Optional[str] = None, db: Session = Depends(get_db)):
+    return plasmid_service.get_plasmid_summary(db, organism=organism)
 
 @router.get("/matrix", summary="Chromosome vs Plasmid AMR Genetic Context")
-def get_context_matrix(db: Session = Depends(get_db)):
-    return plasmid_service.get_chromosome_vs_plasmid_matrix(db)
+def get_context_matrix(organism: Optional[str] = None, db: Session = Depends(get_db)):
+    return plasmid_service.get_chromosome_vs_plasmid_matrix(db, organism=organism)
 
 @router.get("/sankey", summary="ARG Mobilization Alluvial/Sankey Flows")
-def get_mobilization_sankey():
-    return plasmid_service.get_resistome_mobilization_sankey()
+def get_mobilization_sankey(organism: Optional[str] = None):
+    return plasmid_service.get_resistome_mobilization_sankey(organism=organism)
 
 @router.get("/heatmaps", summary="Partitioned Resistome Dual Heatmaps (Chromosome vs. Plasmid)")
-def get_partitioned_heatmaps():
-    return plasmid_service.get_chromosome_vs_plasmid_heatmaps()
-
+def get_partitioned_heatmaps(organism: Optional[str] = None):
+    return plasmid_service.get_chromosome_vs_plasmid_heatmaps(organism=organism)
 
 @router.get("/list", summary="List All Reconstructed Plasmids")
-def list_plasmids(db: Session = Depends(get_db)):
-    plasmids = db.query(Plasmid).all()
+def list_plasmids(organism: Optional[str] = None, db: Session = Depends(get_db)):
+    query = db.query(Plasmid)
+    if organism:
+        query = query.join(Isolate, Plasmid.isolate_id == Isolate.id).filter(Isolate.organism.ilike(f"%{organism}%"))
+    plasmids = query.all()
     return [
         {
             "id": p.id,
@@ -39,4 +43,5 @@ def list_plasmids(db: Session = Depends(get_db)):
         }
         for p in plasmids
     ]
+
 

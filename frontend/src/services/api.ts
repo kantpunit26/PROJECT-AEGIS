@@ -87,11 +87,11 @@ export const api = {
 
 
   // Comparative & Phylogeny
-  async getSNPMatrix(referenceGenome: string = 'HS11286') {
+  async getSNPMatrix(referenceGenome: string = 'HS11286', organism?: string) {
     const res = await fetch(`${API_BASE}/comparative/snp-matrix`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reference_genome: referenceGenome })
+      body: JSON.stringify({ reference_genome: referenceGenome, organism: organism || 'Klebsiella pneumoniae' })
     });
     return (await res.json()) as SNPMatrixData;
   },
@@ -106,56 +106,67 @@ export const api = {
     return res.json();
   },
 
-  async getCircularAtlas() {
-    const res = await fetch(`${API_BASE}/comparative/circular-atlas`);
+  async getCircularAtlas(organism?: string) {
+    const url = organism ? `${API_BASE}/comparative/circular-atlas?organism=${encodeURIComponent(organism)}` : `${API_BASE}/comparative/circular-atlas`;
+    const res = await fetch(url);
     return res.json();
   },
 
-  async getMinimumSpanningTree() {
-    const res = await fetch(`${API_BASE}/comparative/minimum-spanning-tree`);
+  async getMinimumSpanningTree(organism?: string) {
+    const url = organism ? `${API_BASE}/comparative/minimum-spanning-tree?organism=${encodeURIComponent(organism)}` : `${API_BASE}/comparative/minimum-spanning-tree`;
+    const res = await fetch(url);
     return res.json();
   },
 
-  async getTimeScaledTree() {
-    const res = await fetch(`${API_BASE}/comparative/time-scaled-tree`);
+  async getTimeScaledTree(organism?: string) {
+    const url = organism ? `${API_BASE}/comparative/time-scaled-tree?organism=${encodeURIComponent(organism)}` : `${API_BASE}/comparative/time-scaled-tree`;
+    const res = await fetch(url);
     return res.json();
   },
 
-  async getBayesianSkyline() {
-    const res = await fetch(`${API_BASE}/comparative/bayesian-skyline`);
+  async getBayesianSkyline(organism?: string) {
+    const url = organism ? `${API_BASE}/comparative/bayesian-skyline?organism=${encodeURIComponent(organism)}` : `${API_BASE}/comparative/bayesian-skyline`;
+    const res = await fetch(url);
     return res.json();
   },
 
-  async getPanGenomeMatrix() {
-    const res = await fetch(`${API_BASE}/comparative/pan-genome-matrix`);
+  async getPanGenomeMatrix(organism?: string) {
+    const url = organism ? `${API_BASE}/comparative/pan-genome-matrix?organism=${encodeURIComponent(organism)}` : `${API_BASE}/comparative/pan-genome-matrix`;
+    const res = await fetch(url);
     return res.json();
   },
 
-  async getLinearSynteny() {
-    const res = await fetch(`${API_BASE}/comparative/linear-synteny`);
+  async getLinearSynteny(organism?: string) {
+    const url = organism ? `${API_BASE}/comparative/linear-synteny?organism=${encodeURIComponent(organism)}` : `${API_BASE}/comparative/linear-synteny`;
+    const res = await fetch(url);
     return res.json();
   },
 
   // Plasmids
-  async getPlasmidSummary() {
-    const res = await fetch(`${API_BASE}/plasmids/summary`);
+  async getPlasmidSummary(organism?: string) {
+    const url = organism ? `${API_BASE}/plasmids/summary?organism=${encodeURIComponent(organism)}` : `${API_BASE}/plasmids/summary`;
+    const res = await fetch(url);
     return res.json();
   },
 
-  async getPlasmidMatrix() {
-    const res = await fetch(`${API_BASE}/plasmids/matrix`);
+  async getPlasmidMatrix(organism?: string) {
+    const url = organism ? `${API_BASE}/plasmids/matrix?organism=${encodeURIComponent(organism)}` : `${API_BASE}/plasmids/matrix`;
+    const res = await fetch(url);
     return res.json();
   },
 
-  async getMobilizationSankey() {
-    const res = await fetch(`${API_BASE}/plasmids/sankey`);
+  async getMobilizationSankey(organism?: string) {
+    const url = organism ? `${API_BASE}/plasmids/sankey?organism=${encodeURIComponent(organism)}` : `${API_BASE}/plasmids/sankey`;
+    const res = await fetch(url);
     return res.json();
   },
 
-  async getPartitionedHeatmaps() {
-    const res = await fetch(`${API_BASE}/plasmids/heatmaps`);
+  async getPartitionedHeatmaps(organism?: string) {
+    const url = organism ? `${API_BASE}/plasmids/heatmaps?organism=${encodeURIComponent(organism)}` : `${API_BASE}/plasmids/heatmaps`;
+    const res = await fetch(url);
     return res.json();
   },
+
 
   // Geospatial Surveillance
   async getSpatialClusters(params?: { organism?: string; country?: string; gene?: string }) {
