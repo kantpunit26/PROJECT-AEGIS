@@ -36,6 +36,7 @@ interface SidebarProps {
   alertCount?: number;
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
+  selectedOrganism?: string;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -44,6 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   alertCount = 1,
   isMobileOpen = false,
   onCloseMobile,
+  selectedOrganism = 'Klebsiella pneumoniae',
 }) => {
   const navItems = [
     { id: 'dashboard', label: 'Surveillance Hub', icon: Globe },
@@ -125,7 +127,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
         <div className="flex justify-between">
           <span>Taxon:</span>
-          <span className="text-emerald-400">K. pneumoniae</span>
+          <span className="text-emerald-400 font-semibold italic truncate max-w-[120px]">{selectedOrganism}</span>
         </div>
       </div>
     </>

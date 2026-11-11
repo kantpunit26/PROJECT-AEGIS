@@ -3,7 +3,13 @@ import { api } from '../services/api';
 import { Isolate } from '../types';
 import { Search, Filter, Dna, CheckCircle2, AlertTriangle, XCircle, Eye, X } from 'lucide-react';
 
-export const Isolates: React.FC = () => {
+interface IsolatesProps {
+  selectedOrganism?: string;
+}
+
+export const Isolates: React.FC<IsolatesProps> = ({
+  selectedOrganism = 'Klebsiella pneumoniae'
+}) => {
   const [isolates, setIsolates] = useState<Isolate[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [qcFilter, setQcFilter] = useState('ALL');
@@ -13,14 +19,14 @@ export const Isolates: React.FC = () => {
   useEffect(() => {
     async function fetchIsolates() {
       try {
-        const data = await api.getIsolates();
+        const data = await api.getIsolates({ organism: selectedOrganism });
         setIsolates(data);
       } catch (err) {
         console.error('Failed to load isolates:', err);
       }
     }
     fetchIsolates();
-  }, []);
+  }, [selectedOrganism]);
 
   const handleOpenDetail = async (id: string) => {
     setDetailLoading(true);
@@ -73,9 +79,14 @@ export const Isolates: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <div>
-          <h1 className="text-xl font-bold text-white tracking-wide">Genomic Isolates Registry</h1>
+          <div className="flex items-center space-x-2">
+            <h1 className="text-xl font-bold text-white tracking-wide">Genomic Isolates Registry</h1>
+            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-950 text-emerald-300 border border-emerald-800 italic">
+              {selectedOrganism}
+            </span>
+          </div>
           <p className="text-xs text-slate-400">
-            Validated genome assemblies, provenance metadata, and sequence metrics
+            Validated genome assemblies, provenance metadata, and sequence metrics ({isolates.length} records)
           </p>
         </div>
       </div>

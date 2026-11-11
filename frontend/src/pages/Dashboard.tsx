@@ -6,9 +6,13 @@ import { ShieldAlert, Dna, Activity, AlertTriangle, Layers, ArrowUpRight } from 
 
 interface DashboardProps {
   onNavigate: (tab: any) => void;
+  selectedOrganism?: string;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
+export const Dashboard: React.FC<DashboardProps> = ({
+  onNavigate,
+  selectedOrganism = 'Klebsiella pneumoniae'
+}) => {
   const [isolates, setIsolates] = useState<Isolate[]>([]);
   const [clusters, setClusters] = useState<SpatialCluster[]>([]);
   const [alerts, setAlerts] = useState<SurveillanceAlert[]>([]);
@@ -16,11 +20,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
 
   useEffect(() => {
     async function loadData() {
+      setLoading(true);
       try {
         const [isoData, clusterData, alertData] = await Promise.all([
-          api.getIsolates(),
-          api.getSpatialClusters(),
-          api.getAlerts(),
+          api.getIsolates({ organism: selectedOrganism }),
+          api.getSpatialClusters({ organism: selectedOrganism }),
+          api.getAlerts(selectedOrganism),
         ]);
         setIsolates(isoData);
         setClusters(clusterData);
@@ -32,10 +37,27 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       }
     }
     loadData();
-  }, []);
+  }, [selectedOrganism]);
 
   const totalCarbapenemases = isolates.reduce((acc, curr) => acc + (curr.amr_count || 0), 0);
   const activeAlerts = alerts.filter((a) => !a.acknowledged);
+
+  // Compute dominant sequence types for current organism
+  const stCounts: Record<string, number> = {};
+  isolates.forEach((iso) => {
+    if (iso.sequence_type) {
+      stCounts[iso.sequence_type] = (stCounts[iso.sequence_type] || 0) + 1;
+    }
+  });
+  const topSTs = Object.entries(stCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([st]) => st)
+    .slice(0, 2)
+    .join(' / ') || 'Global';
+
+  const resistantCount = isolates.filter((i) => (i.amr_count || 0) > 0).length;
+  const resistanceRate = isolates.length > 0 ? ((resistantCount / isolates.length) * 100).toFixed(1) : '0.0';
+
 
   return (
     <div className="space-y-4 sm:space-y-6 w-full">
@@ -81,11 +103,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
 
         <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-xl space-y-1.5">
           <div className="flex justify-between items-center text-slate-400">
-            <span className="text-xs font-mono uppercase tracking-wider">Carbapenem Resistance</span>
+            <span className="text-xs font-mono uppercase tracking-wider">Antimicrobial Resistance</span>
             <Activity className="w-4 h-4 text-crimson-500" />
           </div>
-          <div className="text-2xl font-bold font-mono text-crimson-400">75.0%</div>
-          <div className="text-[11px] text-slate-400">blaNDM, blaKPC, and blaOXA-48-like</div>
+          <div className="text-2xl font-bold font-mono text-crimson-400">{resistanceRate}%</div>
+          <div className="text-[11px] text-slate-400">Carried verified acquired AMR genes</div>
         </div>
 
         <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-xl space-y-1.5">
@@ -93,17 +115,17 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
             <span className="text-xs font-mono uppercase tracking-wider">High-Risk Lineages</span>
             <Layers className="w-4 h-4 text-blue-400" />
           </div>
-          <div className="text-xl sm:text-2xl font-bold font-mono text-white">ST11 / ST147</div>
-          <div className="text-[11px] text-slate-400">Predominant global pandemic clones</div>
+          <div className="text-xl sm:text-2xl font-bold font-mono text-white">{topSTs}</div>
+          <div className="text-[11px] text-slate-400">Predominant clonal lineages</div>
         </div>
 
         <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-xl space-y-1.5">
           <div className="flex justify-between items-center text-slate-400">
-            <span className="text-xs font-mono uppercase tracking-wider">Active Outbreak Clusters</span>
+            <span className="text-xs font-mono uppercase tracking-wider">Active Outbreak Alerts</span>
             <AlertTriangle className="w-4 h-4 text-amber-500" />
           </div>
-          <div className="text-2xl font-bold font-mono text-amber-400">1 Cluster</div>
-          <div className="text-[11px] text-slate-400">6 SNPs distance in Vadodara, Gujarat</div>
+          <div className="text-2xl font-bold font-mono text-amber-400">{activeAlerts.length} Alerts</div>
+          <div className="text-[11px] text-slate-400">{activeAlerts.length > 0 ? activeAlerts[0].title : 'No active alerts'}</div>
         </div>
       </div>
 
@@ -113,7 +135,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-0">
             <div>
               <h2 className="text-sm sm:text-base font-bold text-white">Global Pathogen Distribution & Provenance</h2>
-              <p className="text-[11px] sm:text-xs text-slate-400">Interactive 3D Three.js surveillance sphere</p>
+              <p className="text-[11px] sm:text-xs text-slate-400">Interactive 3D Three.js surveillance sphere • <span className="text-emerald-400 italic">{selectedOrganism}</span></p>
             </div>
             <button
               onClick={() => onNavigate('surveillance')}
@@ -132,8 +154,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-4">
           <div>
             <h3 className="text-sm font-semibold text-white">Recent Clinical Genomes</h3>
-            <p className="text-xs text-slate-400">Verified K. pneumoniae assemblies</p>
+            <p className="text-xs text-slate-400">Verified <span className="text-emerald-300 italic">{selectedOrganism}</span> assemblies</p>
           </div>
+
 
           <div className="space-y-2.5 overflow-y-auto max-h-[300px] sm:max-h-[380px] pr-1">
             {isolates.slice(0, 6).map((iso) => (

@@ -64,3 +64,4 @@ def simulate_alert(req: AlertSimulationRequest) -> Dict[str, Any]:
             "dispatched_at": datetime.now().isoformat()
         }
     }
+

@@ -4,10 +4,16 @@ import { SpatialCluster } from '../types';
 import { SurveillanceGlobe } from '../components/globe/SurveillanceGlobe';
 import { Search, Sparkles, Navigation, Layers, AlertCircle, CheckCircle } from 'lucide-react';
 
-export const Surveillance: React.FC = () => {
+interface SurveillanceProps {
+  selectedOrganism?: string;
+}
+
+export const Surveillance: React.FC<SurveillanceProps> = ({
+  selectedOrganism = 'Klebsiella pneumoniae'
+}) => {
   const [clusters, setClusters] = useState<SpatialCluster[]>([]);
   const [queryInput, setQueryInput] = useState(
-    'Show all K. pneumoniae isolates with blaNDM within 50 km of Vadodara'
+    `Show all ${selectedOrganism} isolates with resistance genes`
   );
   const [queryResult, setQueryResult] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
@@ -15,15 +21,19 @@ export const Surveillance: React.FC = () => {
 
   useEffect(() => {
     async function fetchClusters() {
+      setLoading(true);
       try {
-        const data = await api.getSpatialClusters();
+        const data = await api.getSpatialClusters({ organism: selectedOrganism });
         setClusters(data);
+        setQueryInput(`Show all ${selectedOrganism} isolates with resistance genes`);
       } catch (err) {
         console.error('Failed to load clusters:', err);
+      } finally {
+        setLoading(false);
       }
     }
     fetchClusters();
-  }, []);
+  }, [selectedOrganism]);
 
   const handleExecuteNLQuery = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +55,7 @@ export const Surveillance: React.FC = () => {
   const handleResetFilters = async () => {
     setLoading(true);
     try {
-      const data = await api.getSpatialClusters();
+      const data = await api.getSpatialClusters({ organism: selectedOrganism });
       setClusters(data);
       setQueryResult(null);
       setSelectedCountry('ALL');
@@ -55,6 +65,7 @@ export const Surveillance: React.FC = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="space-y-4 sm:space-y-6 w-full">

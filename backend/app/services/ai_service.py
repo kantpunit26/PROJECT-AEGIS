@@ -241,3 +241,4 @@ class AISurveillanceService:
         }
 
 ai_service = AISurveillanceService()
+

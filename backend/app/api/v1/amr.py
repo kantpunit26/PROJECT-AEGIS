@@ -12,8 +12,12 @@ def get_amr_prevalence(organism: Optional[str] = None, db: Session = Depends(get
     return amr_service.get_amr_prevalence(db, organism=organism)
 
 @router.get("/co-occurrence", summary="Pairwise AMR Co-occurrence Matrix")
-def get_co_occurrence(top_n: int = Query(10, ge=3, le=30), db: Session = Depends(get_db)):
-    return amr_service.get_amr_co_occurrence(db, top_n=top_n)
+def get_co_occurrence(
+    top_n: int = Query(10, ge=3, le=30),
+    organism: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    return amr_service.get_amr_co_occurrence(db, top_n=top_n, organism=organism)
 
 @router.get("/determinants", summary="Query All AMR Determinants")
 def get_determinants(

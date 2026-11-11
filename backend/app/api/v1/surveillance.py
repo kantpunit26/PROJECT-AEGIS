@@ -33,7 +33,11 @@ def execute_natural_language_query(req: NaturalLanguageQueryRequest, db: Session
     return spatial_service.parse_and_execute_nl_query(db, req.query)
 
 @router.get("/alerts", summary="Surveillance Outbreak Alerts")
-def get_alerts(db: Session = Depends(get_db)):
-    alerts = db.query(SurveillanceAlert).order_by(SurveillanceAlert.created_at.desc()).all()
+def get_alerts(organism: Optional[str] = None, db: Session = Depends(get_db)):
+    query = db.query(SurveillanceAlert)
+    if organism:
+        query = query.filter(SurveillanceAlert.organism.ilike(f"%{organism}%"))
+    alerts = query.order_by(SurveillanceAlert.created_at.desc()).all()
     return alerts
+
 

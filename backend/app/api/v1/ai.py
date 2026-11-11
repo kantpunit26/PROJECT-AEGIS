@@ -44,3 +44,4 @@ def copilot_chat(req: CopilotChatRequest) -> Dict[str, Any]:
         return brief
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+

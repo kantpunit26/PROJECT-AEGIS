@@ -4,16 +4,27 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.services.ast_service import ast_service
 from app.models.ast import ASTRecord
+from app.models.isolate import Isolate
 
 router = APIRouter()
 
 @router.get("/concordance", summary="AST Genotype-Phenotype Diagnostic Metrics")
-def get_ast_concordance(antibiotic: Optional[str] = None, db: Session = Depends(get_db)):
-    return ast_service.calculate_concordance_metrics(db, antibiotic=antibiotic)
+def get_ast_concordance(
+    antibiotic: Optional[str] = None,
+    organism: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    return ast_service.calculate_concordance_metrics(db, antibiotic=antibiotic, organism=organism)
 
 @router.get("/records", summary="List Experimental AST Records")
-def get_ast_records(db: Session = Depends(get_db), antibiotic: Optional[str] = None):
+def get_ast_records(
+    db: Session = Depends(get_db),
+    antibiotic: Optional[str] = None,
+    organism: Optional[str] = None
+):
     query = db.query(ASTRecord)
+    if organism:
+        query = query.join(Isolate, ASTRecord.isolate_id == Isolate.id).filter(Isolate.organism.ilike(f"%{organism}%"))
     if antibiotic:
         query = query.filter(ASTRecord.antibiotic.ilike(f"%{antibiotic}%"))
     records = query.limit(200).all()
@@ -31,4 +42,5 @@ def get_ast_records(db: Session = Depends(get_db), antibiotic: Optional[str] = N
         }
         for r in records
     ]
+
 

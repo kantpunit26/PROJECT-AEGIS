@@ -53,19 +53,19 @@ export const App: React.FC = () => {
   const renderActivePage = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard onNavigate={(tab) => handleTabChange(tab)} />;
+        return <Dashboard onNavigate={(tab) => handleTabChange(tab)} selectedOrganism={selectedOrganism} />;
       case 'surveillance':
-        return <Surveillance />;
+        return <Surveillance selectedOrganism={selectedOrganism} />;
       case 'isolates':
-        return <Isolates />;
+        return <Isolates selectedOrganism={selectedOrganism} />;
       case 'amr':
-        return <AMRExplorer />;
+        return <AMRExplorer selectedOrganism={selectedOrganism} />;
       case 'typing':
-        return <AMRExplorer />;
+        return <AMRExplorer selectedOrganism={selectedOrganism} />;
       case 'comparative':
         return <ComparativeGenomics />;
       case 'ast':
-        return <ASTValidation />;
+        return <ASTValidation selectedOrganism={selectedOrganism} />;
       case 'plasmids':
         return <PlasmidRecon />;
       case 'ai-engine':
@@ -77,7 +77,7 @@ export const App: React.FC = () => {
       case 'reports':
         return <Reports />;
       default:
-        return <Dashboard onNavigate={(tab) => handleTabChange(tab)} />;
+        return <Dashboard onNavigate={(tab) => handleTabChange(tab)} selectedOrganism={selectedOrganism} />;
     }
   };
 
@@ -97,6 +97,7 @@ export const App: React.FC = () => {
           alertCount={1}
           isMobileOpen={isMobileMenuOpen}
           onCloseMobile={() => setIsMobileMenuOpen(false)}
+          selectedOrganism={selectedOrganism}
         />
         <main className="flex-1 overflow-y-auto p-3 sm:p-5 lg:p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 w-full">
           <div className="max-w-7xl mx-auto w-full">{renderActivePage()}</div>
@@ -104,6 +105,7 @@ export const App: React.FC = () => {
       </div>
     </div>
   );
+
 };
 
 

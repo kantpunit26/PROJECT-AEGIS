@@ -46,8 +46,11 @@ export const api = {
     return res.json();
   },
 
-  async getAMRCoOccurrence(topN: number = 10) {
-    const res = await fetch(`${API_BASE}/amr/co-occurrence?top_n=${topN}`);
+  async getAMRCoOccurrence(topN: number = 10, organism?: string) {
+    const url = organism
+      ? `${API_BASE}/amr/co-occurrence?top_n=${topN}&organism=${encodeURIComponent(organism)}`
+      : `${API_BASE}/amr/co-occurrence?top_n=${topN}`;
+    const res = await fetch(url);
     return res.json();
   },
 
@@ -64,11 +67,24 @@ export const api = {
   },
 
   // AST Concordance
-  async getASTConcordance(antibiotic?: string) {
-    const url = antibiotic ? `${API_BASE}/ast/concordance?antibiotic=${encodeURIComponent(antibiotic)}` : `${API_BASE}/ast/concordance`;
-    const res = await fetch(url);
+  async getASTConcordance(antibiotic?: string, organism?: string) {
+    const params = new URLSearchParams();
+    if (antibiotic) params.append('antibiotic', antibiotic);
+    if (organism) params.append('organism', organism);
+    const queryStr = params.toString() ? `?${params.toString()}` : '';
+    const res = await fetch(`${API_BASE}/ast/concordance${queryStr}`);
     return (await res.json()) as ASTConcordanceMetrics[];
   },
+
+  async getASTRecords(antibiotic?: string, organism?: string) {
+    const params = new URLSearchParams();
+    if (antibiotic) params.append('antibiotic', antibiotic);
+    if (organism) params.append('organism', organism);
+    const queryStr = params.toString() ? `?${params.toString()}` : '';
+    const res = await fetch(`${API_BASE}/ast/records${queryStr}`);
+    return res.json();
+  },
+
 
   // Comparative & Phylogeny
   async getSNPMatrix(referenceGenome: string = 'HS11286') {
@@ -160,8 +176,9 @@ export const api = {
     return res.json();
   },
 
-  async getAlerts() {
-    const res = await fetch(`${API_BASE}/surveillance/alerts`);
+  async getAlerts(organism?: string) {
+    const url = organism ? `${API_BASE}/surveillance/alerts?organism=${encodeURIComponent(organism)}` : `${API_BASE}/surveillance/alerts`;
+    const res = await fetch(url);
     return (await res.json()) as SurveillanceAlert[];
   },
 

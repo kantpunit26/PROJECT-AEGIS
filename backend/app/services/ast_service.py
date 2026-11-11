@@ -2,24 +2,20 @@ from typing import Dict, Any, List, Optional
 from sqlalchemy.orm import Session
 from app.models.ast import ASTRecord
 from app.models.amr import AMRDeterminant
+from app.models.isolate import Isolate
 
 class ASTValidationService:
     """Evaluates genotype vs phenotype antimicrobial susceptibility concordance and diagnostic accuracy."""
 
     @staticmethod
-    def calculate_concordance_metrics(db: Session, antibiotic: Optional[str] = None) -> List[Dict[str, Any]]:
-        """
-        Calculates diagnostic accuracy metrics:
-        - True Positive (TP): Genotype Resistant & Phenotype Resistant
-        - True Negative (TN): Genotype Susceptible & Phenotype Susceptible
-        - Major Error (ME / False Positive): Genotype Resistant & Phenotype Susceptible
-        - Very Major Error (VME / False Negative): Genotype Susceptible & Phenotype Resistant
-        - Sensitivity = TP / (TP + FN)
-        - Specificity = TN / (TN + FP)
-        - Precision (PPV) = TP / (TP + FP)
-        - Concordance Rate = (TP + TN) / Total
-        """
+    def calculate_concordance_metrics(
+        db: Session,
+        antibiotic: Optional[str] = None,
+        organism: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
         query = db.query(ASTRecord)
+        if organism:
+            query = query.join(Isolate, ASTRecord.isolate_id == Isolate.id).filter(Isolate.organism.ilike(f"%{organism}%"))
         if antibiotic:
             query = query.filter(ASTRecord.antibiotic == antibiotic)
 

@@ -89,9 +89,12 @@ class AMRAnalysisService:
         }
 
     @staticmethod
-    def get_amr_co_occurrence(db: Session, top_n: int = 10) -> Dict[str, Any]:
+    def get_amr_co_occurrence(db: Session, top_n: int = 10, organism: Optional[str] = None) -> Dict[str, Any]:
         """Computes pairwise co-occurrence matrix for high-frequency resistance genes."""
-        determinants = db.query(AMRDeterminant).all()
+        query = db.query(AMRDeterminant)
+        if organism:
+            query = query.join(Isolate, AMRDeterminant.isolate_id == Isolate.id).filter(Isolate.organism.ilike(f"%{organism}%"))
+        determinants = query.all()
         gene_counts = Counter([d.gene_symbol for d in determinants])
         top_genes = [g for g, _ in gene_counts.most_common(top_n)]
 
