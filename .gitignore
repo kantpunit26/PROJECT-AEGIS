@@ -47,4 +47,6 @@ cinematic_production/
 master_60s_production/
 test_captures/
 test_whoosh.wav
+*.mp4
+
 

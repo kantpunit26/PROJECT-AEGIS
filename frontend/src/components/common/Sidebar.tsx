@@ -11,7 +11,9 @@ import {
   TrendingUp,
   SlidersHorizontal,
   FolderGit2,
-  X
+  X,
+  Cpu,
+  Radio
 } from 'lucide-react';
 
 export type NavTab =
@@ -24,6 +26,8 @@ export type NavTab =
   | 'ast'
   | 'plasmids'
   | 'modelling'
+  | 'ai-engine'
+  | 'one-health'
   | 'reports';
 
 interface SidebarProps {
@@ -50,9 +54,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'comparative', label: 'Comparative & SNPs', icon: FolderGit2 },
     { id: 'ast', label: 'AST Concordance', icon: TestTubes },
     { id: 'plasmids', label: 'MOB-Suite Plasmids', icon: SlidersHorizontal },
+    { id: 'ai-engine', label: 'AI Deep MIC & Copilot', icon: Cpu, badgeText: 'AI' },
+    { id: 'one-health', label: 'One Health & Wastewater', icon: Radio, badgeText: 'WBE' },
     { id: 'modelling', label: 'SEIR Transmission', icon: TrendingUp },
     { id: 'reports', label: 'Alerts & Exports', icon: FileSpreadsheet, badge: alertCount },
   ];
+
 
   const handleSelectTab = (tabId: NavTab) => {
     onTabChange(tabId);
@@ -95,6 +102,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {item.badge && item.badge > 0 && (
                 <span className="px-1.5 py-0.5 text-[10px] font-mono bg-crimson-600 text-white rounded-full font-bold ml-2">
                   {item.badge}
+                </span>
+              )}
+              {(item as any).badgeText && (
+                <span className="px-1.5 py-0.5 text-[9px] font-mono bg-emerald-950 text-emerald-400 border border-emerald-800/60 rounded font-bold ml-2">
+                  {(item as any).badgeText}
                 </span>
               )}
             </button>

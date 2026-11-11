@@ -11,7 +11,9 @@ from app.api.v1 import (
     surveillance,
     modelling,
     reports,
-    jobs
+    jobs,
+    ai,
+    one_health
 )
 
 api_router = APIRouter()
@@ -28,4 +30,7 @@ api_router.include_router(surveillance.router, prefix="/surveillance", tags=["Ge
 api_router.include_router(modelling.router, prefix="/modelling", tags=["Epidemiological Modelling"])
 api_router.include_router(reports.router, prefix="/reports", tags=["Reporting & Export"])
 api_router.include_router(jobs.router, prefix="/jobs", tags=["Workflow Execution"])
+api_router.include_router(ai.router, prefix="/ai", tags=["AI & Machine Learning"])
+api_router.include_router(one_health.router, prefix="/one-health", tags=["One Health & Wastewater"])
+
 

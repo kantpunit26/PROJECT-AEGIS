@@ -1,5 +1,14 @@
 import React from 'react';
-import { ShieldAlert, Activity, Menu, X } from 'lucide-react';
+import { ShieldAlert, Activity, Menu, X, ChevronDown } from 'lucide-react';
+
+export const SUPPORTED_PATHOGENS = [
+  { id: 'Klebsiella pneumoniae', label: 'K. pneumoniae', fullName: 'Klebsiella pneumoniae (Kpn)', badge: 'CRKP / ESBL' },
+  { id: 'Acinetobacter baumannii', label: 'A. baumannii', fullName: 'Acinetobacter baumannii (CRAB)', badge: 'Priority 1 Critical' },
+  { id: 'Pseudomonas aeruginosa', label: 'P. aeruginosa', fullName: 'Pseudomonas aeruginosa (MDR)', badge: 'VIM/IMP Carb' },
+  { id: 'Staphylococcus aureus', label: 'S. aureus', fullName: 'Staphylococcus aureus (MRSA)', badge: 'mecA / PVL' },
+  { id: 'Enterococcus faecium', label: 'E. faecium', fullName: 'Enterococcus faecium (VRE)', badge: 'vanA High-Level' },
+  { id: 'Mycobacterium tuberculosis', label: 'M. tuberculosis', fullName: 'Mycobacterium tuberculosis (XDR)', badge: 'MDR/XDR-TB' }
+];
 
 interface HeaderProps {
   systemHealth?: {
@@ -7,12 +16,16 @@ interface HeaderProps {
     version: string;
     primary_organism: string;
   };
+  selectedOrganism?: string;
+  onSelectOrganism?: (organism: string) => void;
   onToggleMobileMenu?: () => void;
   isMobileMenuOpen?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   systemHealth,
+  selectedOrganism = 'Klebsiella pneumoniae',
+  onSelectOrganism,
   onToggleMobileMenu,
   isMobileMenuOpen = false,
 }) => {
@@ -48,13 +61,22 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       <div className="flex items-center space-x-2 sm:space-x-4 text-xs font-mono">
-        {/* Active Organism */}
-        <div className="hidden sm:flex items-center space-x-2 bg-slate-800/70 border border-slate-700/60 px-2.5 sm:px-3 py-1.5 rounded-md">
-          <Activity className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-          <span className="text-slate-400 hidden md:inline">Target:</span>
-          <span className="text-emerald-300 font-semibold italic truncate max-w-[140px] md:max-w-none">
-            K. pneumoniae
-          </span>
+        {/* Global Pathogen Switcher */}
+        <div className="relative flex items-center bg-slate-800/80 border border-slate-700/70 hover:border-slate-600 px-2.5 sm:px-3 py-1.5 rounded-md transition-colors">
+          <Activity className="w-3.5 h-3.5 text-emerald-400 mr-2 shrink-0" />
+          <span className="text-slate-400 mr-1.5 hidden md:inline">Pathogen:</span>
+          <select
+            value={selectedOrganism}
+            onChange={(e) => onSelectOrganism && onSelectOrganism(e.target.value)}
+            className="bg-transparent text-emerald-300 font-semibold italic cursor-pointer focus:outline-none pr-4 text-xs"
+          >
+            {SUPPORTED_PATHOGENS.map((p) => (
+              <option key={p.id} value={p.id} className="bg-slate-900 text-slate-200">
+                {p.fullName}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="w-3 h-3 text-slate-400 pointer-events-none absolute right-2" />
         </div>
 
         {/* Live Engine Status */}
@@ -70,3 +92,4 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
+

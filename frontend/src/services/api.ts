@@ -5,7 +5,13 @@ import {
   PhylogeneticTreeData,
   SpatialCluster,
   SurveillanceAlert,
-  SEIRSimulationResult
+  SEIRSimulationResult,
+  MICPredictionResponse,
+  AICopilotBrief,
+  WastewaterSite,
+  WBELeadTimeResponse,
+  OneHealthMatrix,
+  AlertSimulationResult
 } from '../types';
 
 const metaEnv = (import.meta as any).env;
@@ -167,6 +173,51 @@ export const api = {
       body: JSON.stringify(params)
     });
     return (await res.json()) as SEIRSimulationResult;
+  },
+
+  // AI & Machine Learning Continuous MIC Engine
+  async predictMIC(params: { organism: string; isolate_accession?: string; genes?: string[] }) {
+    const res = await fetch(`${API_BASE}/ai/predict-mic`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params)
+    });
+    return (await res.json()) as MICPredictionResponse;
+  },
+
+  async copilotChat(query: string, organism: string = 'Klebsiella pneumoniae') {
+    const res = await fetch(`${API_BASE}/ai/copilot-chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, organism })
+    });
+    return (await res.json()) as AICopilotBrief;
+  },
+
+  // One Health & Wastewater-Based Epidemiology (WBE)
+  async getWastewaterSites() {
+    const res = await fetch(`${API_BASE}/one-health/sites`);
+    return (await res.json()) as WastewaterSite[];
+  },
+
+  async getWBELeadTime(days: number = 45) {
+    const res = await fetch(`${API_BASE}/one-health/lead-time?days=${days}`);
+    return (await res.json()) as WBELeadTimeResponse;
+  },
+
+  async getOneHealthNexus() {
+    const res = await fetch(`${API_BASE}/one-health/nexus`);
+    return (await res.json()) as OneHealthMatrix;
+  },
+
+  async simulateAlert(payload: { site_id: string; pathogen: string; resistance_gene: string; log10_load: number }) {
+    const res = await fetch(`${API_BASE}/one-health/simulate-alert`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    return (await res.json()) as AlertSimulationResult;
   }
 };
+
 

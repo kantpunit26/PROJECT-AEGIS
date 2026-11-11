@@ -357,3 +357,119 @@ export interface PartitionedResistomeData {
   };
 }
 
+// AI & Deep Learning MIC Prediction Types
+export interface MICPredictionItem {
+  antibiotic: string;
+  predicted_mic: number;
+  unit: string;
+  ci_lower: number;
+  ci_upper: number;
+  resistance_probability: number;
+  eucast_breakpoint_r: number;
+  clsi_breakpoint_r: number;
+  interpretation: 'RESISTANT' | 'INTERMEDIATE' | 'SUSCEPTIBLE';
+  primary_driver: string;
+}
+
+export interface FeatureAttention {
+  gene: string;
+  attention_weight: number;
+}
+
+export interface MICPredictionResponse {
+  model_version: string;
+  architecture: string;
+  organism: string;
+  isolate_accession: string;
+  input_determinants: string[];
+  predictions: MICPredictionItem[];
+  feature_attentions: FeatureAttention[];
+}
+
+export interface AICopilotBrief {
+  title: string;
+  query: string;
+  organism: string;
+  hazard_score: number;
+  severity: 'CRITICAL' | 'HIGH' | 'WARNING' | 'INFO';
+  executive_summary: string;
+  actionable_recommendations: string[];
+  model_confidence: number;
+  timestamp: string;
+}
+
+// One Health & Wastewater-Based Epidemiology Types
+export interface WastewaterSite {
+  site_id: string;
+  name: string;
+  catchment_area: string;
+  population_served: number;
+  latitude: number;
+  longitude: number;
+  flow_rate_m3_day: number;
+  status: string;
+  alert_level: 'CRITICAL' | 'WARNING' | 'CAUTION' | 'NORMAL';
+  lead_time_days: number;
+  log10_amr_copies_per_liter: number;
+  dominant_determinant: string;
+  target_organism: string;
+  secondary_pathogen: string;
+  last_sample_date: string;
+}
+
+export interface WBETimepoint {
+  date: string;
+  day_index: number;
+  wastewater_amr_log10: number;
+  clinical_admissions: number;
+  early_warning_threshold: number;
+  surge_predicted: boolean;
+}
+
+export interface WBELeadTimeResponse {
+  lead_time_days: number;
+  correlation_pearson_r: number;
+  p_value: string;
+  early_detection_window_text: string;
+  data: WBETimepoint[];
+}
+
+export interface OneHealthReservoir {
+  name: string;
+  total_isolates: number;
+  top_mges: string[];
+  top_genes: string[];
+  high_risk_clones: string[];
+  transmission_index: number;
+}
+
+export interface SharedMGEInterchange {
+  source: string;
+  target: string;
+  element: string;
+  shared_snp_distance: number;
+  confidence: string;
+}
+
+export interface OneHealthMatrix {
+  reservoirs: OneHealthReservoir[];
+  shared_mge_interchanges: SharedMGEInterchange[];
+}
+
+export interface AlertSimulationResult {
+  dispatch_id: string;
+  status: string;
+  channels: { channel: string; status: string; latency_ms: number }[];
+  alert: {
+    site_id: string;
+    pathogen: string;
+    resistance_marker: string;
+    detected_load_log10: number;
+    severity: string;
+    forecasted_lead_time_days: number;
+    recommended_action: string;
+    dispatched_at: string;
+  };
+}
+
+

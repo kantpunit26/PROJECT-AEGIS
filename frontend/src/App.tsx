@@ -10,6 +10,8 @@ import { ASTValidation } from './pages/ASTValidation';
 import { PlasmidRecon } from './pages/PlasmidRecon';
 import { SEIRModelling } from './pages/SEIRModelling';
 import { Reports } from './pages/Reports';
+import { AIEngine } from './pages/AIEngine';
+import { OneHealth } from './pages/OneHealth';
 import { api } from './services/api';
 
 export const App: React.FC = () => {
@@ -18,12 +20,13 @@ export const App: React.FC = () => {
     const tab = params.get('tab') as NavTab;
     const validTabs: NavTab[] = [
       'dashboard', 'surveillance', 'isolates', 'amr', 'typing',
-      'comparative', 'ast', 'plasmids', 'modelling', 'reports'
+      'comparative', 'ast', 'plasmids', 'modelling', 'ai-engine', 'one-health', 'reports'
     ];
     return validTabs.includes(tab) ? tab : 'dashboard';
   };
 
   const [activeTab, setActiveTab] = useState<NavTab>(getTabFromUrl());
+  const [selectedOrganism, setSelectedOrganism] = useState<string>('Klebsiella pneumoniae');
   const [systemHealth, setSystemHealth] = useState<any>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -57,12 +60,18 @@ export const App: React.FC = () => {
         return <Isolates />;
       case 'amr':
         return <AMRExplorer />;
+      case 'typing':
+        return <AMRExplorer />;
       case 'comparative':
         return <ComparativeGenomics />;
       case 'ast':
         return <ASTValidation />;
       case 'plasmids':
         return <PlasmidRecon />;
+      case 'ai-engine':
+        return <AIEngine selectedOrganism={selectedOrganism} />;
+      case 'one-health':
+        return <OneHealth />;
       case 'modelling':
         return <SEIRModelling />;
       case 'reports':
@@ -76,6 +85,8 @@ export const App: React.FC = () => {
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
       <Header
         systemHealth={systemHealth}
+        selectedOrganism={selectedOrganism}
+        onSelectOrganism={setSelectedOrganism}
         isMobileMenuOpen={isMobileMenuOpen}
         onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
       />
@@ -94,5 +105,6 @@ export const App: React.FC = () => {
     </div>
   );
 };
+
 
 export default App;
