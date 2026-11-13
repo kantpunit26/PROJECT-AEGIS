@@ -188,6 +188,26 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Platform & Founder Banner */}
+      <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 rounded-full bg-crimson-900/40 border border-crimson-700/60 flex items-center justify-center font-mono font-bold text-crimson-400 text-xs shrink-0">
+            PK
+          </div>
+          <div>
+            <span className="font-semibold text-slate-200">PROJECT AEGIS</span>
+            <span className="text-slate-400 ml-2 hidden sm:inline">• Architected by Punit Kant for global AMR biosurveillance</span>
+          </div>
+        </div>
+        <button
+          onClick={() => onNavigate('about')}
+          className="text-xs font-mono text-crimson-400 hover:text-crimson-300 transition-colors flex items-center gap-1 font-semibold"
+        >
+          <span>Founder Details & Mission</span>
+          <ArrowUpRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
     </div>
   );
 };

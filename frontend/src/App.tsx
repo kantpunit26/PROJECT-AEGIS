@@ -12,6 +12,7 @@ import { SEIRModelling } from './pages/SEIRModelling';
 import { Reports } from './pages/Reports';
 import { AIEngine } from './pages/AIEngine';
 import { OneHealth } from './pages/OneHealth';
+import { About } from './pages/About';
 import { api } from './services/api';
 
 export const App: React.FC = () => {
@@ -20,7 +21,7 @@ export const App: React.FC = () => {
     const tab = params.get('tab') as NavTab;
     const validTabs: NavTab[] = [
       'dashboard', 'surveillance', 'isolates', 'amr', 'typing',
-      'comparative', 'ast', 'plasmids', 'modelling', 'ai-engine', 'one-health', 'reports'
+      'comparative', 'ast', 'plasmids', 'modelling', 'ai-engine', 'one-health', 'reports', 'about'
     ];
     return validTabs.includes(tab) ? tab : 'dashboard';
   };
@@ -29,6 +30,26 @@ export const App: React.FC = () => {
   const [selectedOrganism, setSelectedOrganism] = useState<string>('Klebsiella pneumoniae');
   const [systemHealth, setSystemHealth] = useState<any>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    const saved = localStorage.getItem('aegis-theme');
+    return saved === 'light' || saved === 'dark' ? saved : 'dark';
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'light') {
+      root.classList.add('light');
+      root.classList.remove('dark');
+    } else {
+      root.classList.add('dark');
+      root.classList.remove('light');
+    }
+    localStorage.setItem('aegis-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   const handleTabChange = (tab: NavTab) => {
     setActiveTab(tab);
@@ -76,19 +97,25 @@ export const App: React.FC = () => {
         return <SEIRModelling selectedOrganism={selectedOrganism} />;
       case 'reports':
         return <Reports selectedOrganism={selectedOrganism} />;
+      case 'about':
+        return <About />;
       default:
         return <Dashboard onNavigate={(tab) => handleTabChange(tab)} selectedOrganism={selectedOrganism} />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans transition-colors duration-200">
       <Header
         systemHealth={systemHealth}
         selectedOrganism={selectedOrganism}
         onSelectOrganism={setSelectedOrganism}
         isMobileMenuOpen={isMobileMenuOpen}
         onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
+        onNavigate={(tab) => handleTabChange(tab as NavTab)}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        activeTab={activeTab}
       />
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar
@@ -99,14 +126,12 @@ export const App: React.FC = () => {
           onCloseMobile={() => setIsMobileMenuOpen(false)}
           selectedOrganism={selectedOrganism}
         />
-        <main className="flex-1 overflow-y-auto p-3 sm:p-5 lg:p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 w-full">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-5 lg:p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 w-full transition-colors duration-200">
           <div className="max-w-7xl mx-auto w-full">{renderActivePage()}</div>
         </main>
       </div>
     </div>
   );
-
 };
-
 
 export default App;
